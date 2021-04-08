@@ -71,11 +71,17 @@ _Provide a brief introduction to your report and outline what the report will co
 ### Research questions
 _Use bullet points to to describe the research questions you are going to address. Write in full sentences._
 
-- Do males have a higher chance of being a successful candidate in each phase of the AI-directed selection than other genders do?
+- Is gender a significant determinant of being a successful applicant in each hiring phase?
 
 ## Is gender a significant determinant of being a successful applicant in each hiring phase?
 
 ### Data Manipulation
+
+By looking at the data for each phase, we can figure out which applicants successfully passed the previous phase by looking at the common *id*s between two phases. For instance, applicants included in the phase II data set are the ones who passed phase I. Following this logic, we create a new variable in each phase that takes value of 1 if the candidate passed this phase, and 0 otherwise. 
+
+After creating the indicator variable, we then looked at the proportion of different gender passing each phase. Referring to *Table 1*, in phase I, 48.3% male, 50.7% female, and 1% prefer not to say passed this phase. There seems to be an even split between males and females who successfully passed the phase. Moving on to phase II, the split between males and females become a bit uneven, as among all those passed the phase, 68.2% are males while 31.8% are females, with 0% of prefer not to say. Lastly, in phase III, the ratio of males to females who passed this phase becomes 4:1. This preliminary observation leads us to think whether the selection algorithm is based solely on candidates' skills, or does gender affects the probability of a candidate being selected as successful candidate? If gender does play a role, then how big is the impact?
+
+To investigate the question, we drew out some exploratory plots. We found that in the phase I selection, all the candidates who did not submit a CV or a cover letter did not pass phase I, as *Figure 1* and *Figure 2* shows. Hence, if a candidate did not submit these two files, then other potential determinants for success like *GPA* and *work experience* become irrelevant in determining whether the candidate passes the current phase. Therefore, we decide to filter out the observations that do not have a CV/cover letter present in phase I, which reduces out sample size from 613 observations to 355 observations. Even though there is a large reduction in the sample size, we think the manipulation is necessary as we can investigate how other factors play a role in the selection process. 
 
 ### Exploratory plots/summary tables
 
@@ -97,13 +103,6 @@ hire_phase3 <- hire_phase3 %>%
 ```
 
 Table 1: Conditional probability table for the three phases of hiring
-
-| Gender            | Phase I       |       | Phase II      |       | Phase III     |       |
-|-------------------|---------------|-------|---------------|-------|---------------|-------|
-|                   | Does not pass | Pass  | Does not pass | Pass  | Does not pass | Pass  |
-| Man               | 0.467         | 0.483 | 0.468         | 0.682 | 0.583         | 0.800 |
-| Prefer not to say | 0.026         | 0.010 | 0.011         | 0.000 |               |       |
-| Woman             | 0.508         | 0.507 | 0.522         | 0.318 | 0.417         | 0.200 |
 
 \begin{table}[]
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -147,21 +146,6 @@ hire_phase1_temp %>%
 ```
 
 
-Table 2: Applicants' total score on the interview vs. whether they pass phase III
-
-```{r}
-hire_2_3 <- hire_phase3 %>% 
-  mutate(total = interviewer_rating_1 + interviewer_rating_2)%>% 
-  arrange(desc(total)) %>% 
-  left_join(hire_phase2, by = "applicant_id") %>% 
-  select(applicant_id, gender, total, pass_final)
-
-colnames(hire_2_3) <- c("Applicant id", "Gender", "Total", "Pass")
-
-knitr::kable(hire_2_3)
-```
-
-
 ### Interpretation on summary tables before model fitting
 #### Make any modifications if you want. btw originial version on google doc
 
@@ -173,7 +157,7 @@ At this time, it seems that men are more likely to be a potential candidates in 
 
 ### Models
 
-Table 3: Coefficient estimates for the logistic model built for hiring phase-I
+Table 2: Coefficient estimates for the logistic model built for hiring phase-I
 
 ```{r}
 # filter out observations without cv or cover letter
@@ -206,7 +190,7 @@ knitr::kable(hire1_mod_table, align = c("r", "r"))
 ```
 
 
-Table 4: Coefficient estimates for the logistic model built for hiring phase-II
+Table 3: Coefficient estimates for the logistic model built for hiring phase-II
 
 ```{r}
 # build model
@@ -233,6 +217,21 @@ knitr::kable(hire2_mod_table, align = c("r", "r"))
 # hire2_mod_wg <- glm(pass~gender + technical_skills + writing_skills + leadership_presence + speaking_skills, family = binomial(), data = hire_phase2)
 # 
 # lmtest::lrtest(hire2_mod, hire2_mod_wg)
+```
+
+
+Table 4: Applicants' total score on the interview vs. whether they pass phase III
+
+```{r}
+hire_2_3 <- hire_phase3 %>% 
+  mutate(total = interviewer_rating_1 + interviewer_rating_2)%>% 
+  arrange(desc(total)) %>% 
+  left_join(hire_phase2, by = "applicant_id") %>% 
+  select(applicant_id, gender, total, pass_final)
+
+colnames(hire_2_3) <- c("Applicant id", "Gender", "Total", "Pass")
+
+knitr::kable(hire_2_3)
 ```
 
 
