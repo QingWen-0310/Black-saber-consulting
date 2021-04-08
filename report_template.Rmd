@@ -157,6 +157,8 @@ At this time, it seems that men are more likely to be a potential candidates in 
 
 ### Models
 
+We have a binary response variable that indicates whether the applicant passed the phase. Also,since our observations are independent, with one applicant being one observation, a logistic model seems appropriate under this circumstance. Hence, in phase-I and phase-II, we adopt a logistic model with logit link to model the relationship among the response and the potential factors that influence the odds of being a successful candidate.
+
 Table 2: Coefficient estimates for the logistic model built for hiring phase-I
 
 ```{r}
@@ -189,7 +191,6 @@ knitr::kable(hire1_mod_table, align = c("r", "r"))
 # lmtest::lrtest(hire1_mod, hire1_mod_wg)
 ```
 
-
 Table 3: Coefficient estimates for the logistic model built for hiring phase-II
 
 ```{r}
@@ -218,6 +219,8 @@ knitr::kable(hire2_mod_table, align = c("r", "r"))
 # 
 # lmtest::lrtest(hire2_mod, hire2_mod_wg)
 ```
+
+With phase-II data, we include each candidate's scores on *technical skills*, *speaking skills*, *writing skills*, and *leadership presence* as our predictors. 
 
 
 Table 4: Applicants' total score on the interview vs. whether they pass phase III
