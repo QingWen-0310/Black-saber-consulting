@@ -20,7 +20,7 @@ titlepage-rule-height: 2
 library(tidyverse)
 library(lme4)
 library(knitr)
-# clone test
+
 # this should supress all code and messages
 knitr::opts_chunk$set(echo=FALSE, message = FALSE, warning = FALSE, fig.align = "center", fig.height = 3.5)
 ```
