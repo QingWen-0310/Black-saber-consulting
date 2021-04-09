@@ -299,9 +299,11 @@ _In this section you will summarize your findings across all the research questi
 ## Code of ethical conduct
 
 _This section should be fairly short, no more than half a page. Assume a general audience, much like your executive summary._
-
-* _Make at least three relevant statements about your company’s approach to ethical statistical consulting. These should be appropriately in line with professional conduct advice like the (Statistical Society of Canada Code of Conduct)[https://ssc.ca/sites/default/files/data/Members/public/Accreditation/ethics_e.pdf] or the (Ethical Guidelines for Statistical Practice from the American Statistical Society)[https://www.amstat.org/ASA/Your-Career/Ethical-Guidelines-for-Statistical-Practice.aspx]. For example, "the customer is always right" ISN’T the type of thing an ethical statistical consultant would include._
-*	_Be very careful not to just copy and paste from these other documents! Put things in your own words._
+ 
+**ProDasta Company Ethics Statement**
+1. ProDasta Consulting Company seeks to have high professional standards within the development, usage and enforcement and keeps a high standard for having the reputation of statistical practices. We state to do the best of setting standards for the Statistics field and for Statisticians, avoid any wrong actions. 
+2. ProDasta Consulting Company and the employees take on the responsibility of work. We refuse to deliver any wrong statements that can cause damage to the professional statistical fields.
+3. We support and welcome any statisticians in their professional field. We act with integrity and dignity toward the fellow statisticians, and provide opportunities for them to the professional field. 
 
 
 __Final advice: KNIT EARLY AND OFTEN!__
