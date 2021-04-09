@@ -75,15 +75,7 @@ _Use bullet points to to describe the research questions you are going to addres
 
 ## Is gender a significant determinant of being a successful applicant in each hiring phase?
 
-### Data Manipulation
-
-By looking at the data for each phase, we can figure out which applicants successfully passed the previous phase by looking at the common *id*s between two phases. For instance, applicants included in the phase II data set are the ones who passed phase I. Following this logic, we create a new variable in each phase that takes value of 1 if the candidate passed this phase, and 0 otherwise. 
-
-After creating the indicator variable, we then looked at the proportion of different gender passing each phase. Referring to *Table 1*, in phase I, 48.3% male, 50.7% female, and 1% prefer not to say passed this phase. There seems to be an even split between males and females who successfully passed the phase. Moving on to phase II, the split between males and females become a bit uneven, as among all those passed the phase, 68.2% are males while 31.8% are females, with 0% of prefer not to say. Lastly, in phase III, the ratio of males to females who passed this phase becomes 4:1. This preliminary observation leads us to think whether the selection algorithm is based solely on candidates' skills, or does gender affects the probability of a candidate being selected as successful candidate? If gender does play a role, then how big is the impact?
-
-To investigate the question, we drew out some exploratory plots. We found that in the phase I selection, all the candidates who did not submit a CV or a cover letter did not pass phase I, as *Figure 1* and *Figure 2* shows. Hence, if a candidate did not submit these two files, then other potential determinants for success like *GPA* and *work experience* become irrelevant in determining whether the candidate passes the current phase. Therefore, we decide to filter out the observations that do not have a CV/cover letter present in phase I, which reduces out sample size from 613 observations to 355 observations. Even though there is a large reduction in the sample size, we think the manipulation is necessary as we can investigate how other factors play a role in the selection process. 
-
-### Exploratory plots/summary tables
+### Data Manipulation & Exploratory plots/summary tables
 
 ```{r}
 # add indicator variables of whether the applicant passed phase-I
@@ -145,19 +137,15 @@ hire_phase1_temp %>%
   labs(fill = "Pass", x = "Cover letter", y = "Proportion")
 ```
 
+By looking at the data for each phase, we can figure out which applicants successfully passed the previous phase by looking at the common *id*s between two phases. For instance, applicants included in the phase II data set are the ones who passed phase I. Following this logic, we create a new variable in each phase that takes value of 1 if the candidate passed this phase, and 0 otherwise. 
 
-### Interpretation on summary tables before model fitting
-#### Make any modifications if you want. btw originial version on google doc
+After creating the indicator variable, we then looked at the proportion of different gender passing each phase. Referring to *Table 1*, in phase I, 48.3% male, 50.7% female, and 1% prefer not to say passed this phase. There seems to be an even split between males and females who successfully passed the phase. Moving on to phase II, the split between males and females become a bit uneven, as among all those passed the phase, 68.2% are males while 31.8% are females, with 0% of prefer not to say. Lastly, in phase III, the ratio of males to females who passed this phase becomes 4:1. This preliminary observation leads us to think whether the selection algorithm is based solely on candidates' skills, or does gender affects the probability of a candidate being selected as successful candidate? If gender does play a role, then how big is the impact?
 
-Before we officially fit models, we build proportion tables to show the percentage of new graduates applicants who admitted to the next round. From table 1, conditional probability table for phase-I candidates, there is no obvious difference between the passing rate of males and females (males: 48.33%, females: 50.67%), therefore about half of the candidates go to the next round (phase-II). 
-
-For table 2 and table 3, a significant difference of the passing rate is exhibited here. The passing rate for male applicants is more than twice that for female applicants; 68.18% males in the first round successfully go into the final interview, while there is only 31.81% females. The final round, which decides who gets the job, shows an even larger difference between the passing rate. Here, 80% of the males in the last get the job offer, where only 20% females get in eventually. Most of the female applicants stop in the second round.
-
-At this time, it seems that men are more likely to be a potential candidates in Black Saber Consulting Company, but we still cannot make any inference or conclusion yet. After we fit models and assess relationships among different factors like GPA, work experience, and technical skills etc., we may make inferences at that time.
+To investigate the question, we drew out some exploratory plots. We found that in the phase I selection, all the candidates who did not submit a CV or a cover letter did not pass phase I, as *Figure 1* and *Figure 2* shows. Hence, if a candidate did not submit these two files, then other potential determinants for success like *GPA* and *work experience* become irrelevant in determining whether the candidate passes the current phase. Therefore, we decide to filter out the observations that do not have a CV/cover letter present in phase I, which reduces out sample size from 613 observations to 355 observations. Even though there is a large reduction in the sample size, we think the manipulation is necessary as we can investigate how other factors play a role in the selection process. 
 
 ### Models
 
-We have a binary response variable that indicates whether the applicant passed the phase. Also,since our observations are independent, with one applicant being one observation, a logistic model seems appropriate under this circumstance. Hence, in phase-I and phase-II, we adopt a logistic model with logit link to model the relationship among the response and the potential factors that influence the odds of being a successful candidate.
+We have a binary response variable that indicates whether the applicant passed the phase. Also,since our observations are independent, with one applicant being one observation, a logistic model seems appropriate under this circumstance. Hence, in phase-I and phase-II, we adopt a logistic model with logit link to model the relationship among the response and the potential factors that influence the odds of being a successful candidate. 
 
 Table 2: Coefficient estimates for the logistic model built for hiring phase-I
 
@@ -201,7 +189,7 @@ hire2_ci <- confint(hire2_mod)
 
 # table for reporting
 ests_h2 <- format(round(exp(summary(hire2_mod)$coef)[, 1], 2), nsmall = 2)
-cis_h2 <- round(exp(hire2_ci), 6)
+cis_h2 <- round(exp(hire2_ci), 2)
 cis_h2 <- str_c("(", trimws(cis_h2[, 1]), ", ", cis_h2[, 2], ")")
 pval_h2 <- round(summary(hire2_mod)$coefficients[, 4], 4)
 hire2_rownames <- c("Baseline odds", "Technical skills", "Writing skills", "Leadership_presence", "Speaking_skills")
@@ -220,26 +208,49 @@ knitr::kable(hire2_mod_table, align = c("r", "r"))
 # lmtest::lrtest(hire2_mod, hire2_mod_wg)
 ```
 
-With phase-II data, we include each candidate's scores on *technical skills*, *speaking skills*, *writing skills*, and *leadership presence* as our predictors. 
+With phase-II data, the model can be written out as follows: $$log(\frac{\mu_2}{1-\mu_2}) = \beta_0 + \beta_1 *\text{Technical skills} + \beta_2 *\text{Writing skills} + \beta_3 * \text{Leadership presence} + \beta_4 * \text{Speaking skills}$$. 
+
+$\mu$: the probability of a candidate passing phase-II
+$\beta_i$: coefficient for each variable
+
+According to the model, we include each candidate's scores on *technical skills*, *writing skills*, *leadership presence* and *speaking skills* as our predictors. From the results, we see that the effect of all four predictors are significantly positive, with the odds ratio for *technical skills*, *writing skills*, *leadership presence*, and *speaking skills* being 1.08, 1.09, 2.53, and 2.01. The p-values for the 4 predictors are all significant. Taking the odds ratio of *technical skills* as an example, it means that with a 1 unit increase in *technical skills*, the odds of being a successful candidate in phase-II is 1.08 times higher. 
+
+To investigate whether gender plays a significant role in the phase-II selection, we include *gender* as our predictor in addition to the original four. Then, by performing a Likelihood ratio test, we found that the p-value is around 0.41, suggesting that we lean more towards the simpler model that does not include *gender* as one of its predictors. 
 
 
-Table 4: Applicants' total score on the interview vs. whether they pass phase III
-
-```{r}
+```{r, fig.cap="Histogram of the total scores vs. whether the candidate with the score passed phase-III"}
 hire_2_3 <- hire_phase3 %>% 
   mutate(total = interviewer_rating_1 + interviewer_rating_2)%>% 
+  mutate(`Pass` = as.factor(ifelse(pass_final == 1, "Yes", "No"))) %>% 
   arrange(desc(total)) %>% 
   left_join(hire_phase2, by = "applicant_id") %>% 
-  select(applicant_id, gender, total, pass_final)
+  select(applicant_id, gender, total, `Pass`)
 
-colnames(hire_2_3) <- c("Applicant id", "Gender", "Total", "Pass")
-
-knitr::kable(hire_2_3)
+hire_2_3 %>% 
+  ggplot(aes(x = total, fill = `Pass`)) +
+  geom_histogram(color = "white") +
+  theme_minimal() +
+  scale_fill_manual(values = c("#fa8154", "#51c6b9")) +
+  labs(x = "Total score") + 
+  facet_wrap(~gender)
 ```
 
+Table 4: Phase-II information for the two applicants with a tie in phase III
+
+```{r}
+hire2_temp <- hire_phase2 %>% 
+  filter(applicant_id == 1600 | applicant_id == 3560) %>% 
+  select(applicant_id, gender, technical_skills, writing_skills, leadership_presence, speaking_skills)
+colnames(hire2_temp) <- c("Applicant id", "Gender", "Technical skills", "Writing skills", "Leadership presence", "Speaking skills")
+
+knitr::kable(hire2_temp)
+```
+
+*Figure 2* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations.
 
 ### Conclusions
 
+As *Table 4* shows, the male has higher scores in *technical skills*, while the female is better at categories like *writing skills*, *leadership presence*, and *speaking skills*. According to our phase-II model, *leadership presence* and *speaking skills* seems to have larger effect on the odds ratio than the other two determinants do. So, we would expect the female to be selected as a successful candidate instead of the male. 
 
 
 ## Informative title for section addressing a research question
