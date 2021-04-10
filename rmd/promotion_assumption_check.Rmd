@@ -1,0 +1,95 @@
+---
+title: "promotion_assumption_check"
+author: "Ke Deng"
+date: "2021/4/9"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lme4)
+library(knitr)
+library(readr)
+```
+
+```{r}
+curr_employee <- read_csv("/Users/krist/Documents/303 final project/data/black-saber-current-employees.csv")
+```
+
+### Verify assumptions
+
+- the cases are independently distributed
+- the random effect variables are normally distributed
+
+```{r}
+qqnorm(curr_employee$employee_id)
+qqline(curr_employee$employee_id, col = "orange", lwd=2)
+```
+
+From the Quantile-Quantile plot above, the points follow closely around the qq-line in the middle and deviates from it at the two ends. Given this information, the variable "id" can be assumed to be normally distributed, hence matching the model assumption. 
+
+```{r}
+cleaned_data <- curr_employee
+cleaned_data <- cleaned_data%>%
+  mutate(team, team_num =case_when(
+    team == "Client services"~1,
+    team == "Data"~2,
+    team == "Design Legal and financial"~3,
+    team == "Marketing and sales"~4,
+    team == "Operations"~5,
+    team == "People and talent"~6,
+    team == "Software"~7  ))
+
+qqnorm(cleaned_data$team_num)
+qqline(cleaned_data$team_num, col = "orange", lwd=2)
+```
+Creating and checking the y-variable:
+```{r}
+cleaned_data <- curr_employee
+#cleaned_data <- cleaned_data%>%
+#  group_by(employee_id) %>%
+#  count()
+cleaned_data <- cleaned_data%>%
+  mutate(role_seniority, role_num =case_when(
+    role_seniority == "Entry-level"~1,
+    role_seniority == "Junior I"~2,
+    role_seniority == "Junior II"~3,
+    role_seniority == "Senior I"~4,
+    role_seniority == "Senior II"~5,
+    role_seniority == "Senior III"~6,
+    role_seniority == "Manager"~7,
+    role_seniority == "Director"~8,
+    role_seniority == "Vice president"~9,
+    ))
+
+cleaned_data <- cleaned_data %>%
+  group_by(employee_id) %>%
+  summarize(num_promotions = max(role_num) - min(role_num))
+
+
+hist(cleaned_data$num_promotions)
+
+y = cleaned_data$num_promotions
+n = length(y)
+x=table(y)
+k=as.numeric(names(x))
+plot(k,log(x)+lfactorial(k))
+n*(1-cor(k,log(x)+lfactorial(k))^2)
+```
+In the histogram -- downward shaping, not linear - Poisson
+to further verify, using Poissonness plot and goodness of fit test of a Poisson, the response variable follows a Poisson distribution, and hence all assumptions are matched, we are ready to build the model
+
+
+
+
+
+
+
+
+
+
+
+
+
+

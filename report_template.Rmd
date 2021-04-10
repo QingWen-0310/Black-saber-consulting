@@ -308,8 +308,6 @@ _In this section you will summarize your findings across all the research questi
 
 
 ## Code of ethical conduct
-
-_This section should be fairly short, no more than half a page. Assume a general audience, much like your executive summary._
  
 **ProDasta Company Ethics Statement**
 1. ProDasta Consulting Company seeks to have high professional standards within the development, usage and enforcement and keeps a high standard for having the reputation of statistical practices. We state to do the best of setting standards for the Statistics field and for Statisticians, avoid any wrong actions. 
