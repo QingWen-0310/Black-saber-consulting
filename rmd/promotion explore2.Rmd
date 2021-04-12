@@ -204,12 +204,12 @@ However, a Poisson regression model is a good first choice because the responses
 
 ```{r}
 table1 <-table(clean$gender,clean$promotion_counts)
+table1
 ```
 
 explore whether team is correlated with promotion
 ```{r}
-table2 <-table(clean$team,clean$promotion_counts)
-conditional1<-prop.table()
+table2 <-table(clean2$team,clean2$promotion_counts)
 table2
 ```
 
@@ -253,7 +253,10 @@ summary(pro_model3)
 ```
 
 
-
+```{r}
+pro_model4<-glm(promotion_counts~gender+productivity+offset(num_quarters)+leadership_for_level+(1|employee_id)+team, data=clean2, family=poisson("log"))
+summary(pro_model4)
+```
 
 \newpage
 # Consultant information
