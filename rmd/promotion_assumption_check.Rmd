@@ -63,33 +63,32 @@ cleaned_data <- cleaned_data%>%
     role_seniority == "Vice president"~9,
     ))
 
-cleaned_data <- cleaned_data %>%
-  group_by(employee_id) %>%
-  summarize(num_promotions = max(role_num) - min(role_num))
+get_promoted=c(0)
+for (n in 1:6905){
+   if (cleaned_data$employee_id[n] == cleaned_data$employee_id[n+1]){
+     if (cleaned_data$role_num[n] == cleaned_data$role_num[n+1]){
+       get_promoted[n+1] = 0
+     }
+     else{
+       get_promoted[n+1] = 1
+     }
+   }
+  else{
+    get_promoted[n+1]=0
+  }
+}
+cleaned_data$get_promotion = get_promoted
+cleaned_data[1,]
+
+table_promotion = table(cleaned_data$get_promotion)
+table_promotion
+
+cleaned_data <- cleaned_data%>%
+  filter(gender!="Prefer not to say")
 
 
-hist(cleaned_data$num_promotions)
-
-y = cleaned_data$num_promotions
-n = length(y)
-x=table(y)
-k=as.numeric(names(x))
-plot(k,log(x)+lfactorial(k))
-n*(1-cor(k,log(x)+lfactorial(k))^2)
+model1<- glm(get_promotion~gender+team+leadership_for_level+productivity, data=cleaned_data, family = binomial())
+summary(model1)
 ```
-In the histogram -- downward shaping, not linear - Poisson
-to further verify, using Poissonness plot and goodness of fit test of a Poisson, the response variable follows a Poisson distribution, and hence all assumptions are matched, we are ready to build the model
-
-
-
-
-
-
-
-
-
-
-
-
 
 
