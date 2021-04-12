@@ -79,6 +79,8 @@ for (n in 1:6905){
 }
 get_promoted[6906]=0
 cleaned_data$get_promotion = get_promoted
+cleaned_data[1,]
+cleaned_data[2,]
 ```
 
 
