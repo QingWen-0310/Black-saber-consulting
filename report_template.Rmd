@@ -78,6 +78,8 @@ _Use bullet points to to describe the research questions you are going to addres
 
 - Does gender affect how many promotions an employee during its employment?
 
+- Is the amount of salary determined based only on the talents and performance of the employees?
+
 ## Is gender a significant determinant of being a successful applicant in each hiring phase?
 
 ### Data Manipulation & Exploratory plots/summary tables
@@ -305,12 +307,47 @@ ggsave("images/example.png", width = 7, height = 4)
 
 ![](images/example.png)
 
-## Informative title for section addressing a research question
+## Is the amount of salary determined based only on the talents and performance of the employees?
 
-```{r, include = FALSE}
-library(tidyverse)
-library(lme4)
+### Data manipulation
+
+### Exploratory plots/summary tables
+
+```{r}
+# salary distribution filled by gender
+curr_1 <- curr_employee %>% 
+  mutate(salary = str_replace(salary, "\\$", "")) %>% 
+  mutate(salary = as.integer(str_replace(salary, ",", ""))) 
+
+curr_1%>% 
+  group_by(employee_id, gender) %>% 
+  summarize(mean_wage = mean(salary)) %>% 
+  ggplot(aes(x = mean_wage, fill = gender)) +
+  geom_histogram() +
+  theme_minimal() +
+  labs(x="Mean salary", y="Number of employees", title="Distribution of mean salary of each current employees",subtitle="Classifed by genders") +
+  scale_fill_manual(values = c("#FFC300", "#D5F2DF", "#538708"))
+
+# summary statistics for different gender groups
+# summary(curr_1[curr_1$gender == "Man",])
+# summary(curr_1[curr_1$gender == "Woman",])
+# summary(curr_1[curr_1$gender == "Prefer not to say",])
+
+gender <- c("Man", "Woman", "Prefer not to say")
+salary_mean <- c(48491, 45811, 46340)
+prod_mean <- c(48.99, 50.44, 45.47)
+
+sum_table <- data_frame(gender, prod_mean, salary_mean)
+colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
+knitr::kable(sum_table)
 ```
+
+
+### Method (Model)
+
+### Conclusions
+
+
 
 ## Discussion
 
