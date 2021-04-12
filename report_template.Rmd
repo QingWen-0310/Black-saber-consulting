@@ -68,7 +68,7 @@ _This part of the report is much more comprehensive than the executive summary. 
 #what the report will cover
 #setting scope and expectations
 
-The following report will be analyzing the data given by Black Saber Consulting Company regarding their company potential biases within hiring and remuneration processes. The report includes an abstract, data exploration, data analysis, model building, execurate summary, result and conclusions. The study is built upon five data sets from Black Saber Consulting Company of different phases: three hiring phases, the final hires, and the current employee information. The report is done through the software R-studio and JupyterHub. In the data explore section, the data shall be examined at first to check for correlations and potential variables to be used for data analysis and model building section. The statisticians choose the best fitted model and explain in the model building section. Finally the result section includes graphs and plots of the final evidence to answer the raised research question, which will be answered in the conclusion section. The report is confidential and will be used for the Black Saber Consulting Company only.
+The following report will be analyzing the data given by Black Saber Consulting Company regarding their company potential biases within hiring and remuneration processes. The report includes an abstract, data exploration, data analysis, model building, executive summary, result and conclusions. The study is built upon five data sets from Black Saber Consulting Company of different phases: three hiring phases, the final hires, and the current employee information. The report is done through the software R-studio and JupyterHub. In the data explore section, the data shall be examined at first to check for correlations and potential variables to be used for data analysis and model building section. The statisticians choose the best fitted model and explain in the model building section. Finally the result section includes graphs and plots of the final evidence to answer the raised research question, which will be answered in the conclusion section. The report is confidential and will be used for the Black Saber Consulting Company only.
 
 
 ### Research questions
@@ -76,10 +76,11 @@ _Use bullet points to to describe the research questions you are going to addres
 
 - Is gender a significant determinant of being a successful applicant in each hiring phase?
 
+- Does gender affect how many promotions an employee during its employment?
+
+- Is the amount of salary determined based only on the talents and performance of the employees?
+
 ## Is gender a significant determinant of being a successful applicant in each hiring phase?
-
-## Does gender affect how many promotions an employee during its employment?
-
 
 ### Data Manipulation & Exploratory plots/summary tables
 
@@ -151,6 +152,7 @@ hire_phase1_temp %>%
   theme_minimal() +
   labs(fill = "Pass", x = "Cover letter submission", y = "Proportion")
 ```
+
 # Data manipulation?? Not sure
 
 By looking at the data for each phase, we can figure out which applicants successfully passed the previous phase by looking at the common *id*s between two phases. For instance, applicants included in the phase II data set are the ones who passed phase I. Following this logic, we create a new variable in each phase that takes value of 1 if the candidate passed this phase, and 0 otherwise. 
@@ -158,6 +160,7 @@ By looking at the data for each phase, we can figure out which applicants succes
 To investigate the question, we drew out some exploratory plots. We found that in the phase I selection, all the candidates who did not submit a CV or a cover letter did not pass phase I, as *Figure 1* and *Figure 2* shows. Hence, if a candidate did not submit these two files, then other potential determinants for success like *GPA* and *work experience* become irrelevant in determining whether the candidate passes the current phase. Therefore, we decide to filter out the observations that do not have a CV/cover letter present in phase I, which reduces out sample size from 613 observations to 355 observations. Even though there is a large reduction in the sample size, we think the manipulation is necessary as we can investigate how other factors play a role in the selection process. 
 
 # Result?? Not Sure
+
 After creating the indicator variable, we then looked at the proportion of different gender passing each phase. Referring to *Table 1*, in phase I, 48.3% male, 50.7% female, and 1% prefer not to say passed this phase. There seems to be an even split between males and females who successfully passed the phase. Moving on to phase II, the split between males and females become a bit uneven, as among all those passed the phase, 68.2% are males while 31.8% are females, with 0% of prefer not to say. Lastly, in phase III, the ratio of males to females who passed this phase becomes 4:1. This preliminary observation leads us to think whether the selection algorithm is based solely on candidates' skills, or does gender affects the probability of a candidate being selected as successful candidate? If gender does play a role, then how big is the impact?
 
 ### Models
@@ -304,12 +307,47 @@ ggsave("images/example.png", width = 7, height = 4)
 
 ![](images/example.png)
 
-## Informative title for section addressing a research question
+## Is the amount of salary determined based only on the talents and performance of the employees?
 
-```{r, include = FALSE}
-library(tidyverse)
-library(lme4)
+### Data manipulation
+
+### Exploratory plots/summary tables
+
+```{r}
+# salary distribution filled by gender
+curr_1 <- curr_employee %>% 
+  mutate(salary = str_replace(salary, "\\$", "")) %>% 
+  mutate(salary = as.integer(str_replace(salary, ",", ""))) 
+
+curr_1%>% 
+  group_by(employee_id, gender) %>% 
+  summarize(mean_wage = mean(salary)) %>% 
+  ggplot(aes(x = mean_wage, fill = gender)) +
+  geom_histogram() +
+  theme_minimal() +
+  labs(x="Mean salary", y="Number of employees", title="Distribution of mean salary of each current employees",subtitle="Classifed by genders") +
+  scale_fill_manual(values = c("#FFC300", "#D5F2DF", "#538708"))
+
+# summary statistics for different gender groups
+# summary(curr_1[curr_1$gender == "Man",])
+# summary(curr_1[curr_1$gender == "Woman",])
+# summary(curr_1[curr_1$gender == "Prefer not to say",])
+
+gender <- c("Man", "Woman", "Prefer not to say")
+salary_mean <- c(48491, 45811, 46340)
+prod_mean <- c(48.99, 50.44, 45.47)
+
+sum_table <- data_frame(gender, prod_mean, salary_mean)
+colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
+knitr::kable(sum_table)
 ```
+
+
+### Method (Model)
+
+### Conclusions
+
+
 
 ## Discussion
 
@@ -333,10 +371,11 @@ _In this section you will summarize your findings across all the research questi
 
 
 ## Code of ethical conduct
- 
-**ProDasta Company Ethics Statement**
+
 1. ProDasta Consulting Company seeks to have high professional standards within the development, usage and enforcement and keeps a high standard for having the reputation of statistical practices. We state to do the best of setting standards for the Statistics field and for Statisticians, avoid any wrong actions. 
+
 2. ProDasta Consulting Company and the employees take on the responsibility of work. We refuse to deliver any wrong statements that can cause damage to the professional statistical fields.
+
 3. We support and welcome any statisticians in their professional field. We act with integrity and dignity toward the fellow statisticians, and provide opportunities for them to the professional field. 
 
 
