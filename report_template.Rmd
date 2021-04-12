@@ -1,18 +1,22 @@
 ---
 title: "Report title"
-subtitle: "Subtitle"
 author: "Report prepared for Black Saber Software by Eminence Analytics"
-date: 2021-04-21
-lang: "en"
+date: '2021-04-21'
 output:
   pdf_document:
     template: report.tex
-    toc: true
+    toc: yes
     toc_depth: 2
-titlepage: true
-titlepage-color: "51c6b9"
-titlepage-text-color: "FFFFFF"
-titlepage-rule-color: "FFFFFF"
+  html_document:
+    toc: yes
+    toc_depth: '2'
+    df_print: paged
+lang: en
+subtitle: Subtitle
+titlepage: yes
+titlepage-color: 51c6b9
+titlepage-text-color: FFFFFF
+titlepage-rule-color: FFFFFF
 titlepage-rule-height: 2
 ---
 
@@ -20,6 +24,7 @@ titlepage-rule-height: 2
 library(tidyverse)
 library(lme4)
 library(knitr)
+library(gridExtra)
 
 # this should supress all code and messages
 knitr::opts_chunk$set(echo=FALSE, message = FALSE, warning = FALSE, fig.align = "center", fig.height = 3.5)
@@ -117,13 +122,14 @@ Woman             & 0.508             & 0.507    & 0.522             & 0.318    
 \end{table}
 
 ```{r, fig.cap="Proportion of people passed phase I by gender and cv"}
+par(fig=c(0.1,0.7,0.3,0.9))
 hire_phase1_temp <- hire_phase1 %>% 
   mutate(cover_letter = as.factor(ifelse(cover_letter == 0, "Not submitted", "Submitted"))) %>% 
   mutate(cv = as.factor(ifelse(cv == 0, "No CV", "Have CV"))) %>% 
   mutate(pass = as.factor(ifelse(pass == 0, "No", "Yes")))
 
 # proportion of successful applicants within each sex group
-hire_phase1_temp %>% 
+sex_success <- hire_phase1_temp %>% 
   ggplot(aes(x = cv, fill = as.factor(pass))) +
   geom_bar(position = "fill") +
   facet_wrap(~gender) +
@@ -131,12 +137,14 @@ hire_phase1_temp %>%
   ylab("Proportion") +
   theme_minimal() +
   labs(fill = "Pass", x = "CV submission", y = "Proportion")
+
+
 ```
 
 ```{r, fig.cap="Proportion of people passed phase I by gender and cover letter"}
 
 # proportion of successful applicants vs. gender and cover letter
-hire_phase1_temp %>% 
+cover_success <- hire_phase1_temp %>% 
   ggplot(aes(x = cover_letter, fill = as.factor(pass))) +
   geom_bar(position = "fill") +
   facet_wrap(~gender) +
@@ -144,6 +152,7 @@ hire_phase1_temp %>%
   ylab("Proportion") +
   theme_minimal() +
   labs(fill = "Pass", x = "Cover letter submission", y = "Proportion")
+
 ```
 # Data manipulation?? Not sure
 
