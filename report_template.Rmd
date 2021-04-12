@@ -64,9 +64,12 @@ _Guidelines for the executive summary:_
 _This part of the report is much more comprehensive than the executive summary. The audience is statistics/data-minded people, but you should NOT include code or unformatted R output here._
 
 
-## Introduction
+## Introduction 
+#what the report will cover
+#setting scope and expectations
 
-_Provide a brief introduction to your report and outline what the report will cover. This section is valuable for setting scope and expectations. _
+The following report will be analyzing the data given by Black Saber Consulting Company regarding their company potential biases within hiring and remuneration processes. The report includes an abstract, data exploration, data analysis, model building, execurate summary, result and conclusions. The study is built upon five data sets from Black Saber Consulting Company of different phases: three hiring phases, the final hires, and the current employee information. The report is done through the software R-studio and JupyterHub. In the data explore section, the data shall be examined at first to check for correlations and potential variables to be used for data analysis and model building section. The statisticians choose the best fitted model and explain in the model building section. Finally the result section includes graphs and plots of the final evidence to answer the raised research question, which will be answered in the conclusion section. The report is confidential and will be used for the Black Saber Consulting Company only.
+
 
 ### Research questions
 _Use bullet points to to describe the research questions you are going to address. Write in full sentences._
@@ -74,6 +77,9 @@ _Use bullet points to to describe the research questions you are going to addres
 - Is gender a significant determinant of being a successful applicant in each hiring phase?
 
 ## Is gender a significant determinant of being a successful applicant in each hiring phase?
+
+## Does gender affect how many promotions an employee during its employment?
+
 
 ### Data Manipulation & Exploratory plots/summary tables
 
