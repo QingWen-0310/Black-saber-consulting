@@ -319,20 +319,6 @@ curr_1 <- curr_employee %>%
   mutate(salary = str_replace(salary, "\\$", "")) %>% 
   mutate(salary = as.integer(str_replace(salary, ",", ""))) 
 
-curr_1%>% 
-  group_by(employee_id, gender) %>% 
-  summarize(mean_wage = mean(salary)) %>% 
-  ggplot(aes(x = mean_wage, fill = gender)) +
-  geom_histogram() +
-  theme_minimal() +
-  labs(x="Mean salary", y="Number of employees", title="Distribution of mean salary of each current employees",subtitle="Classifed by genders") +
-  scale_fill_manual(values = c("#FFC300", "#D5F2DF", "#538708"))
-
-# summary statistics for different gender groups
-# summary(curr_1[curr_1$gender == "Man",])
-# summary(curr_1[curr_1$gender == "Woman",])
-# summary(curr_1[curr_1$gender == "Prefer not to say",])
-
 gender <- c("Man", "Woman", "Prefer not to say")
 salary_mean <- c(48491, 45811, 46340)
 prod_mean <- c(48.99, 50.44, 45.47)
@@ -342,8 +328,49 @@ colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
 knitr::kable(sum_table)
 ```
 
+```{r, fig.cap="Salary vs. gender and leadership for level"}
+curr_1 %>% 
+  ggplot(aes(x = productivity, y = salary, color = gender)) +
+  geom_point() +
+  theme_minimal() +
+  scale_color_manual(values = c("#fa8154", "#FFC300", "#51c6b9")) +
+  labs(x = "Productivity", y = "Salary") +
+  facet_wrap(~leadership_for_level) +
+  guides(color = guide_legend(title = "Gender"))
+
+# table(curr_1$gender, curr_1$leadership_for_level)
+```
 
 ### Method (Model)
+
+```{r}
+# re-level the factor
+curr_1 <- curr_1 %>% 
+  mutate(gender = fct_relevel(gender, "Prefer not to say", after = 0)) %>% 
+  mutate(role_seniority = fct_relevel(role_seniority, "Entry-level", after = 0)) %>% 
+  mutate(role_seniority = fct_relevel(role_seniority, "Manager", after = 7)) %>% 
+  mutate(role_seniority = fct_relevel(role_seniority, "Director", after = 7))
+
+# build the final model
+salary_mod <- lmer(salary ~ productivity + leadership_for_level + gender + role_seniority
+                    + (1|employee_id), data = curr_1)
+
+# table for reporting
+ests_s <- format(round(summary(salary_mod)$coef[, 1], 2), nsmall = 2)
+salary_ci <- round(confint(salary_mod)[-c(1:2),], 2)
+# cis_h1 <- round(exp(hire1_ci), 6)[-1,]
+cis_s <- str_c("(", trimws(salary_ci[, 1]), ", ", salary_ci[, 2], ")")
+# pval_h1 <- round(summary(hire1_mod)$coefficients[, 4], 4)
+salary_rownames <- c("Intercept", "Productivity", "Leadership: exceeds expectations", "Leadership: needs improvement", "Gender: man", "Gender: woman", "Junior I", "Junior II", "Senior I", "Senior II", "Senior III", "Manager", "Director", "Vice president")
+
+salary_colnames <- c("Estimates", "95% CI")
+
+salary_mod_table <- cbind(ests_s, cis_s)
+rownames(salary_mod_table) <- salary_rownames
+colnames(salary_mod_table) <- salary_colnames
+knitr::kable(salary_mod_table, align = c("r", "r"))
+```
+
 
 ### Conclusions
 
