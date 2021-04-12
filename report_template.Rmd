@@ -161,13 +161,13 @@ cover_success <- hire_phase1_temp %>%
 
 ```
 
-# Data manipulation?? Not sure
+### Data manipulation?? Not sure
 
 By looking at the data for each phase, we can figure out which applicants successfully passed the previous phase by looking at the common *id*s between two phases. For instance, applicants included in the phase II data set are the ones who passed phase I. Following this logic, we create a new variable in each phase that takes value of 1 if the candidate passed this phase, and 0 otherwise. 
 
 To investigate the question, we drew out some exploratory plots. We found that in the phase I selection, all the candidates who did not submit a CV or a cover letter did not pass phase I, as *Figure 1* and *Figure 2* shows. Hence, if a candidate did not submit these two files, then other potential determinants for success like *GPA* and *work experience* become irrelevant in determining whether the candidate passes the current phase. Therefore, we decide to filter out the observations that do not have a CV/cover letter present in phase I, which reduces out sample size from 613 observations to 355 observations. Even though there is a large reduction in the sample size, we think the manipulation is necessary as we can investigate how other factors play a role in the selection process. 
 
-# Result?? Not Sure
+### Result?? Not Sure
 
 After creating the indicator variable, we then looked at the proportion of different gender passing each phase. Referring to *Table 1*, in phase I, 48.3% male, 50.7% female, and 1% prefer not to say passed this phase. There seems to be an even split between males and females who successfully passed the phase. Moving on to phase II, the split between males and females become a bit uneven, as among all those passed the phase, 68.2% are males while 31.8% are females, with 0% of prefer not to say. Lastly, in phase III, the ratio of males to females who passed this phase becomes 4:1. This preliminary observation leads us to think whether the selection algorithm is based solely on candidates' skills, or does gender affects the probability of a candidate being selected as successful candidate? If gender does play a role, then how big is the impact?
 
@@ -208,7 +208,7 @@ knitr::kable(hire1_mod_table, align = c("r", "r"))
 #lmtest::lrtest(hire1_mod, hire1_mod_wg)
 ```
 
-# lrt on two models (w/ and w/o gender)
+### lrt on two models (w/ and w/o gender)
 
 After building two different models, one has gender as a factor and the other one does not, we conduct a likelihood ratio test to verify our final decision of the model. As the P value is larger than 0.05 significance level, indicates there is not much difference between two models and gender does not impose significant effects on the passing rate in this current phase. In this case, we will continue to use the simpler model, which is the one which only has GPA, extracurricular activities and work experiences as factors.
 
