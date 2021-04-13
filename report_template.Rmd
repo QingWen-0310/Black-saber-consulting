@@ -176,7 +176,6 @@ After creating the indicator variable, we then looked at the proportion of diffe
 
 We have a binary response variable that indicates whether the applicant passed the phase. Also,since our observations are independent, with one applicant being one observation, a logistic model seems appropriate under this circumstance. Hence, in phase-I and phase-II, we adopt a logistic model with logit link to model the relationship among the response and the potential factors that influence the odds of being a successful candidate. 
 
-Table 2: Coefficient estimates for the logistic model built for hiring phase-I
 
 ```{r}
 # filter out observations without cv or cover letter
@@ -200,7 +199,7 @@ hire1_colnames <- c("Estimates", "95% CI", "P-value")
 hire1_mod_table <- cbind(ests_h1, cis_h1, pval_h1)
 rownames(hire1_mod_table) <- hire1_rownames
 colnames(hire1_mod_table) <- hire1_colnames
-knitr::kable(hire1_mod_table, align = c("r", "r"))
+knitr::kable(hire1_mod_table, align = c("r", "r"), caption = "Coefficient estimates for the logistic model built for hiring phase-I")
 # summary(hire1_mod)
 ```
 
@@ -213,8 +212,6 @@ knitr::kable(hire1_mod_table, align = c("r", "r"))
 
 After building two different models, one has gender as a factor and the other one does not, we conduct a likelihood ratio test to verify our final decision of the model. As the P value is larger than 0.05 significance level, indicates there is not much difference between two models and gender does not impose significant effects on the passing rate in this current phase. In this case, we will continue to use the simpler model, which is the one which only has GPA, extracurricular activities and work experiences as factors.
 
-
-Table 3: Coefficient estimates for the logistic model built for hiring phase-II
 
 ```{r}
 # build model
@@ -234,7 +231,7 @@ hire2_colnames <- c("Estimates", "95% CI", "P-value")
 hire2_mod_table <- cbind(ests_h2, cis_h2, pval_h2)
 rownames(hire2_mod_table) <- hire2_rownames
 colnames(hire2_mod_table) <- hire2_colnames
-knitr::kable(hire2_mod_table, align = c("r", "r"))
+knitr::kable(hire2_mod_table, align = c("r", "r"), caption = "Coefficient estimates for the logistic model built for hiring phase-II")
 ```
 
 ```{r}
@@ -270,7 +267,6 @@ hire_2_3 %>%
   facet_wrap(~gender)
 ```
 
-Table 4: Phase-II information for the two applicants with a tie in phase III
 
 ```{r}
 hire2_temp <- hire_phase2 %>% 
@@ -278,7 +274,7 @@ hire2_temp <- hire_phase2 %>%
   select(applicant_id, gender, technical_skills, writing_skills, leadership_presence, speaking_skills)
 colnames(hire2_temp) <- c("Applicant id", "Gender", "Technical skills", "Writing skills", "Leadership presence", "Speaking skills")
 
-knitr::kable(hire2_temp)
+knitr::kable(hire2_temp, caption = "Phase-II information for the two applicants with a tie in phase III")
 ```
 
 *Figure 2* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations.
@@ -324,8 +320,6 @@ We reformatted the values of *salary* in the original data set by taking off the
 
 ### Exploratory plots/summary tables
 
-Table 7: Mean productivity and mean salary by gender
-
 ```{r}
 # salary distribution filled by gender
 curr_1 <- curr_employee %>% 
@@ -346,7 +340,7 @@ prod_mean <- c(45.47, 48.99, 50.44)
 
 sum_table <- data_frame(gender, prod_mean, salary_mean)
 colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
-knitr::kable(sum_table)
+knitr::kable(sum_table, caption = "Mean productivity and mean salary by gender")
 ```
 
 *Table 7* shows the average *productivity* and *salary* by gender. From the table, we see that females possess the highest average productivity of 50.44, but the lowest average salary among the three genders. On the other hand, males have the second highest average productivity of 48.99 and the highest average salary. 
