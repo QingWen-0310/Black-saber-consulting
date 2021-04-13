@@ -24,11 +24,12 @@ curr_1 <- curr_employee %>%
   mutate(salary = str_replace(salary, "\\$", "")) %>% 
   mutate(salary = as.integer(str_replace(salary, ",", ""))) 
 curr_1%>% 
-  group_by(employee_id, gender) %>% 
+  group_by(employee_id, gender, team) %>% 
   summarize(mean_wage = mean(salary)) %>% 
   ggplot(aes(x = mean_wage, fill = gender)) +
   geom_histogram() +
   theme_minimal() +
+  facet_wrap(~team) +
   labs(x="Mean salary", y="Number of employees", title="Distribution of mean salary of each current employees",subtitle="Classifed by genders") +
   scale_fill_manual(values = c("#FFC300", "#D5F2DF", "#538708"))
 

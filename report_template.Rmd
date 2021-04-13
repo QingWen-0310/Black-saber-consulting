@@ -327,31 +327,6 @@ curr_1 <- curr_employee %>%
   mutate(salary = str_replace(salary, "\\$", "")) %>% 
   mutate(salary = as.integer(str_replace(salary, ",", ""))) 
 
-gender <- c("Man", "Woman", "Prefer not to say")
-salary_mean <- c(48491, 45811, 46340)
-prod_mean <- c(48.99, 50.44, 45.47)
-
-sum_table <- data_frame(gender, prod_mean, salary_mean)
-colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
-knitr::kable(sum_table)
-```
-
-```{r, fig.cap="Salary vs. gender and leadership for level"}
-curr_1 %>% 
-  ggplot(aes(x = productivity, y = salary, color = gender)) +
-  geom_point() +
-  theme_minimal() +
-  scale_color_manual(values = c("#fa8154", "#FFC300", "#51c6b9")) +
-  labs(x = "Productivity", y = "Salary") +
-  facet_wrap(~leadership_for_level) +
-  guides(color = guide_legend(title = "Gender"))
-
-# table(curr_1$gender, curr_1$leadership_for_level)
-```
-
-### Method (Model)
-
-```{r}
 # re-level the factor
 curr_1 <- curr_1 %>% 
   mutate(gender = fct_relevel(gender, "Prefer not to say", after = 0)) %>% 
@@ -359,6 +334,32 @@ curr_1 <- curr_1 %>%
   mutate(role_seniority = fct_relevel(role_seniority, "Manager", after = 7)) %>% 
   mutate(role_seniority = fct_relevel(role_seniority, "Director", after = 7))
 
+gender <- c("Prefer not to say", "Man", "Woman")
+salary_mean <- c(46340, 48491, 45811)
+prod_mean <- c(45.47, 48.99, 50.44)
+
+sum_table <- data_frame(gender, prod_mean, salary_mean)
+colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
+knitr::kable(sum_table)
+```
+
+```{r, fig.cap="Salary vs. gender and leadership for level"}
+options("scipen" = 10)
+curr_1 %>% 
+  ggplot(aes(x = productivity, y = salary, fill = gender)) +
+  geom_histogram(stat = "identity") +
+  theme_minimal() +
+  scale_fill_manual(values = c("#fa8154", "#FFC300", "#51c6b9")) +
+  labs(x = "Productivity", y = "Salary") +
+  facet_wrap(~leadership_for_level) +
+  guides(fill = guide_legend(title = "Gender"))
+
+# table(curr_1$gender, curr_1$leadership_for_level)
+```
+
+### Method (Model)
+
+```{r}
 # build the final model
 salary_mod <- lmer(salary ~ productivity + leadership_for_level + gender + role_seniority
                     + (1|employee_id), data = curr_1)
