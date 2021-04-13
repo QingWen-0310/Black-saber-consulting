@@ -24,6 +24,7 @@ titlepage-rule-height: 2
 library(tidyverse)
 library(lme4)
 library(knitr)
+library(lmtest)
 
 # this should supress all code and messages
 knitr::opts_chunk$set(echo=FALSE, message = FALSE, warning = FALSE, fig.align = "center", fig.height = 3.5)
@@ -319,7 +320,11 @@ ggsave("images/example.png", width = 7, height = 4)
 
 ### Data manipulation
 
+We reformatted the values of *salary* in the original data set by taking off the "$" and "," and change the values from character values to numeric values for latter analysis. In addition to this, we re-level some factors for better display and ease of understanding. For instance, we re-level the factor of *seniority role* to reflect the ordering of the job title, from the least to the most senior.
+
 ### Exploratory plots/summary tables
+
+Table 7: Mean productivity and mean salary by gender
 
 ```{r}
 # salary distribution filled by gender
@@ -330,6 +335,7 @@ curr_1 <- curr_employee %>%
 # re-level the factor
 curr_1 <- curr_1 %>% 
   mutate(gender = fct_relevel(gender, "Prefer not to say", after = 0)) %>% 
+  mutate(leadership_for_level = fct_relevel(leadership_for_level, "Needs improvement", after = 0)) %>% 
   mutate(role_seniority = fct_relevel(role_seniority, "Entry-level", after = 0)) %>% 
   mutate(role_seniority = fct_relevel(role_seniority, "Manager", after = 7)) %>% 
   mutate(role_seniority = fct_relevel(role_seniority, "Director", after = 7))
@@ -343,19 +349,24 @@ colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
 knitr::kable(sum_table)
 ```
 
+*Table 7* shows the average *productivity* and *salary* by gender. From the table, we see that females possess the highest average productivity of 50.44, but the lowest average salary among the three genders. On the other hand, males have the second highest average productivity of 48.99 and the highest average salary. 
+
 ```{r, fig.cap="Salary vs. gender and leadership for level"}
 options("scipen" = 10)
 curr_1 %>% 
-  ggplot(aes(x = productivity, y = salary, fill = gender)) +
-  geom_histogram(stat = "identity") +
+  ggplot(aes(x = salary, fill = gender)) +
+  geom_histogram(color = "white") +
   theme_minimal() +
   scale_fill_manual(values = c("#fa8154", "#FFC300", "#51c6b9")) +
-  labs(x = "Productivity", y = "Salary") +
+  labs(x = "Salary") +
   facet_wrap(~leadership_for_level) +
+  coord_flip() +
   guides(fill = guide_legend(title = "Gender"))
 
 # table(curr_1$gender, curr_1$leadership_for_level)
 ```
+
+*Figure 6* displays the histogram of *salary* by *gender* and *leadership role*. Looking at the distribution of *salary* by *leadership role*, we see that the distribution is a bit right skewed, which is common as there are usually fewer employees with very high salaries than the ones with lower salaries. One thing worth notice is that the employees that *exceeds expectations* are all males, while the employees that *needs improvement* are all females. Despite this, employees that *exceeds expectations* seem to overall have slightly higher salaries than the employees that *needs improvement* do. 
 
 ### Method (Model)
 
@@ -367,9 +378,7 @@ salary_mod <- lmer(salary ~ productivity + leadership_for_level + gender + role_
 # table for reporting
 ests_s <- format(round(summary(salary_mod)$coef[, 1], 2), nsmall = 2)
 salary_ci <- round(confint(salary_mod)[-c(1:2),], 2)
-# cis_h1 <- round(exp(hire1_ci), 6)[-1,]
 cis_s <- str_c("(", trimws(salary_ci[, 1]), ", ", salary_ci[, 2], ")")
-# pval_h1 <- round(summary(hire1_mod)$coefficients[, 4], 4)
 salary_rownames <- c("Intercept", "Productivity", "Leadership: exceeds expectations", "Leadership: needs improvement", "Gender: man", "Gender: woman", "Junior I", "Junior II", "Senior I", "Senior II", "Senior III", "Manager", "Director", "Vice president")
 
 salary_colnames <- c("Estimates", "95% CI")
@@ -377,8 +386,19 @@ salary_colnames <- c("Estimates", "95% CI")
 salary_mod_table <- cbind(ests_s, cis_s)
 rownames(salary_mod_table) <- salary_rownames
 colnames(salary_mod_table) <- salary_colnames
-knitr::kable(salary_mod_table, align = c("r", "r"))
+knitr::kable(salary_mod_table, align = c("r", "r"), caption = "Model summary for salary")
 ```
+
+Since we have repeated measurement in the data set of all the employees and a continuous response variable: *salary*, we consider fitting a linear mixed model, treating the *ids* for the employees as random effects. The fixed effects we consider fitting in the model are *productivity*, *leadership role*, *seniority role*, and *gender*, as we are interested whether the former three variables help quantify an employee's talents and abilities, while we want to figure out whether *gender* also plays a role in determining an employee's salary. Hence, the model we try to fit can be written out as follows: $$Y_{ij} = \boldsymbol X_{ij} \boldsymbol \beta + \epsilon$$. 
+
+$Y_{ij}$: repeated measures j for salary on individual i, the response variable \
+$\boldsymbol X$: model matrix for the fixed effects: *productivity*, *leadership role*, *seniority role*, and *gender* \
+$\boldsymbol \beta$: the effect of covariates on the mean outcome \
+$\epsilon$: residual errors 
+
+To verify our assumptions for the usage of the model, firstly, we have a continuous response variable. Secondly, we identified *employee id* as our grouping variable resulting from the repeated measurement, so we include this grouping variable as our random effect. Lastly, even though the observations within each subject are not independent, the subjects themselves are independent. After building models that include *employee id* as only random intercept and random intercept and slope (interacting with *gender*), the likelihood ratio test tells us to adopt the model with only the random intercept (p = 0.9246). 
+
+From *table 8*, we see that the grand average of the salary is 31900.93. Predictors that are significant are: *leadership role: exceeds expectations*, *leadership role: needs improvement*, and all levels of the *seniority role*, since the 95% confidence intervals for these coefficients do not include 0. Among these important covariates, both levels of the *leadership role* have large negative effects, while all levels of the *seniority role* have large positive effects on salary.
 
 
 ### Conclusions
