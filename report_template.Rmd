@@ -365,10 +365,25 @@ curr_1 %>%
 ### Method (Model)
 
 ```{r}
+# model without gender
+salary_mod_nog <- lmer(salary ~ productivity + leadership_for_level + role_seniority
+                    + (1|employee_id), data = curr_1)
 # build the final model
 salary_mod <- lmer(salary ~ productivity + leadership_for_level + gender + role_seniority
                     + (1|employee_id), data = curr_1)
 
+# lrtest(salary_mod_nog, salary_mod)
+```
+
+**Table X**: Likelihood ratio test results for model with/without gender
+
+|   | #Df | Loglik | Df | Chisq | Pr(>Chisq) |
+|---|-----|--------|----|-------|------------|
+| 1 | 14  | -58728 |    |       |            |
+| 2 | 16  | -58671 | 2  | 114   | <2.2e-16   |
+
+
+```{r}
 # table for reporting
 ests_s <- format(round(summary(salary_mod)$coef[, 1], 2), nsmall = 2)
 salary_ci <- round(confint(salary_mod)[-c(1:2),], 2)
@@ -394,9 +409,12 @@ To verify our assumptions for the usage of the model, firstly, we have a continu
 
 From *table 8*, we see that the grand average of the salary is 31900.93. Predictors that are significant are: *leadership role: exceeds expectations*, *leadership role: needs improvement*, and all levels of the *seniority role*, since the 95% confidence intervals for these coefficients do not include 0. Among these important covariates, both levels of the *leadership role* have large negative effects, while all levels of the *seniority role* have large positive effects on salary.
 
+To determine whether *gender* plays a significant role in the determination of salary, we compare our current model with a nested model that have the same covariates as in our current model but without *gender*. The result of the model comparison using the likelihood ratio test is presented in table **TODO**. We see that the p-value appears to be really small (< 2.2e-16), so we expect having *gender* to improve our model by a significant amount. 
+
 
 ### Conclusions
 
+*discuss how lrt interacts with our figure of leadership_role by gender*
 
 
 ## Discussion
