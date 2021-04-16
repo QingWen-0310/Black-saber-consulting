@@ -136,7 +136,7 @@ hire_phase1_temp <- hire_phase1 %>%
   mutate(pass = as.factor(ifelse(pass == 0, "No", "Yes")))
 
 # proportion of successful applicants within each sex group
-sex_success <- hire_phase1_temp %>% 
+hire_phase1_temp %>% 
   ggplot(aes(x = cv, fill = as.factor(pass))) +
   geom_bar(position = "fill") +
   facet_wrap(~gender) +
@@ -151,7 +151,7 @@ sex_success <- hire_phase1_temp %>%
 ```{r, fig.cap="Proportion of people passed phase I by gender and cover letter"}
 
 # proportion of successful applicants vs. gender and cover letter
-cover_success <- hire_phase1_temp %>% 
+hire_phase1_temp %>% 
   ggplot(aes(x = cover_letter, fill = as.factor(pass))) +
   geom_bar(position = "fill") +
   facet_wrap(~gender) +
@@ -172,45 +172,48 @@ To investigate the question, we drew out some exploratory plots. We found that i
 
 After creating the indicator variable, we then looked at the proportion of different gender passing each phase. Referring to *Table 1*, in phase I, 48.3% male, 50.7% female, and 1% prefer not to say passed this phase. There seems to be an even split between males and females who successfully passed the phase. Moving on to phase II, the split between males and females become a bit uneven, as among all those passed the phase, 68.2% are males while 31.8% are females, with 0% of prefer not to say. Lastly, in phase III, the ratio of males to females who passed this phase becomes 4:1. This preliminary observation leads us to think whether the selection algorithm is based solely on candidates' skills, or does gender affects the probability of a candidate being selected as successful candidate? If gender does play a role, then how big is the impact?
 
-### Models
-
-We have a binary response variable that indicates whether the applicant passed the phase. Also,since our observations are independent, with one applicant being one observation, a logistic model seems appropriate under this circumstance. Hence, in phase-I and phase-II, we adopt a logistic model with logit link to model the relationship among the response and the potential factors that influence the odds of being a successful candidate. 
-
+### Method
 
 ```{r}
 # filter out observations without cv or cover letter
 hire_phase1_filtered <- hire_phase1 %>%
   filter(cv == 1) %>%
   filter(cover_letter == 1)
-
-# build model
-hire1_mod <- glm(pass ~ gpa + extracurriculars + work_experience, family = binomial(), data = hire_phase1_filtered)
-
-# table for reporting
-ests_h1 <- format(round(exp(summary(hire1_mod)$coef)[, 1], 2), nsmall = 2)
-hire1_ci <- confint(hire1_mod)
-cis_h1 <- round(exp(hire1_ci), 6)[-1,]
-cis_h1 <- str_c("(", trimws(cis_h1[, 1]), ", ", cis_h1[, 2], ")")
-pval_h1 <- round(summary(hire1_mod)$coefficients[, 4], 4)
-hire1_rownames <- c("Baseline odds", "GPA", "Extracurriculars", "Work experience")
-
-hire1_colnames <- c("Estimates", "95% CI", "P-value")
-
-hire1_mod_table <- cbind(ests_h1, cis_h1, pval_h1)
-rownames(hire1_mod_table) <- hire1_rownames
-colnames(hire1_mod_table) <- hire1_colnames
-knitr::kable(hire1_mod_table, align = c("r", "r"), caption = "Coefficient estimates for the logistic model built for hiring phase-I")
-# summary(hire1_mod)
 ```
+
+Table 2: Proportion of candidates passing Phase-I by gender with filtered observations
+
+|                   | Does not pass | Pass |
+|-------------------|---------------|------|
+| Man               | 0.47          | 0.48 |
+| Prefer not to say | 0.02          | 0.01 |
+| Woman             | 0.51          | 0.51 |
+
+After filtering out the observations that do not submit a CV or a cover letter, we again make a summary table that contains the proportion of candidates passing Phase-I of the hiring process by gender. From *Table 2*, we see that among those candidates who successfully passed Phase-I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say". Hence, from the table summary, it seems that the Phase-I hiring is pretty fair across genders. 
 
 ```{r}
-#hire1_mod_wg <- glm(pass ~ gender + gpa + extracurriculars + work_experience, family = binomial(), data = hire_phase1_filtered)
-#lmtest::lrtest(hire1_mod, hire1_mod_wg)
+h1f_male <- hire_phase1_filtered %>% 
+  filter(gender == "Man")
+h1f_female <- hire_phase1_filtered %>% 
+  filter(gender == "Woman")
+h1f_pns <- hire_phase1_filtered %>% 
+  filter(gender == "Prefer not to say")
+# summary(h1f_female)
+# summary(h1f_male)
+# summary(h1f_pns)
+
+gen <- c("Man", "Woman", "Prefer not to say")
+num <- c(171, 180, 4)
+gpa_median <- c(3.00, 3.00, 2.40)
+extra_median <- c(1.00, 1.00, 1.00)
+work_median <- c(1.00, 1.00, 1.00)
+
+sum_filtered_table <- data_frame(gen, num, gpa_median, extra_median, work_median)
+colnames(sum_filtered_table) <- c("Gender", "Number", "GPA", "Extracurricular", "Work experience")
+kable(sum_filtered_table, caption = "Median statistics by gender")
 ```
 
-### lrt on two models (w/ and w/o gender)
-
-After building two different models, one has gender as a factor and the other one does not, we conduct a likelihood ratio test to verify our final decision of the model. As the P value is larger than 0.05 significance level, indicates there is not much difference between two models and gender does not impose significant effects on the passing rate in this current phase. In this case, we will continue to use the simpler model, which is the one which only has GPA, extracurricular activities and work experiences as factors.
+*Table 3* displays the median statistics for *GPA*, number of *Extracurricular*, and the number of *Work experience* the candidates have by gender. There is a relatively even split between the number of *male* and *female* candidates, while *prefer not to say* only has 4 candidates. Despite this, the median values for each of the variables seem to be pretty consistent across different genders. The only discrepancy appears to be *prefer not to say* having a lower *GPA* than the other two genders, potentially due to the small number of observations. 
 
 
 ```{r}
@@ -285,6 +288,7 @@ As *Table 4* shows, the male has higher scores in *technical skills*, while the 
 
 In both Phase I and Phase II, we fit generalized linear models on different variables in each phase, and use likelihood ratio tests to find out whether gender plays an important role in passing rate. In phase I, we assess the impact of GPA, extracurricular activities and work experiences on passing status; for phase II, technical skills, writing skills, leadership presence and speaking skills are considered. Analyzing their odds ratios, these variables all have remarkable effects on whether candidates go to the next round smoothly. On the other hand, variable gender does not play a role here. The fitted models and the likelihood ratio tests tell us that gender does not have a noticeable impact on the final result, we tend to choose a simpler model that excludes the impact of gender here. Therefore, we do not think gender is a significant determinant of being a successful applicant in each hiring phase.
 
+**TODO: phase-I: what do we expect from the tables and figures?**
 
 ## Informative title for section addressing a research question
 
