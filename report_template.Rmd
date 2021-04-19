@@ -83,8 +83,14 @@ the following report will be analyzing the data given by Black Saber Consulting 
 - Is the amount of salary determined based only on the talents and performance of the employees?
 
 
+<<<<<<< HEAD
 \newpage
 - Is gender a significant determinant of being a successful applicant in each hiring phase?
+=======
+## Is gender a significant determinant of being a successful applicant in each hiring phase?
+
+### Data and exploratory analysis
+>>>>>>> 3691330895bb9e059814e58f9cc56c5398351ed9
 
 ### Data Manipulation & Exploratory plots/summary tables
 ### Variables
@@ -141,8 +147,6 @@ hire_phase1_temp %>%
   ylab("Proportion") +
   theme_minimal() +
   labs(fill = "Pass", x = "CV submission", y = "Proportion")
-
-
 ```
 
 ```{r, fig.cap="Proportion of people passed phase I by gender and cover letter"}
@@ -155,22 +159,44 @@ hire_phase1_temp %>%
   ylab("Proportion") +
   theme_minimal() +
   labs(fill = "Pass", x = "Cover letter submission", y = "Proportion")
-
 ```
 
-
-
-### Data manipulation
+```{r, fig.cap="Proportion of people passed phase I by gender and extracurriculars"}
+# proportion of successful applicants vs. gender and work experience
+hire_phase1_temp %>% 
+  ggplot(aes(x = extracurriculars, fill = as.factor(pass))) +
+  geom_bar(position = "fill") +
+  facet_wrap(~gender) +
+  scale_fill_manual(values = c("#fa8154", "#51c6b9"))+
+  ylab("Proportion") +
+  theme_minimal() +
+  labs(fill = "Pass", x = "extracurricular", y = "Proportion")
+```
 
 By looking at the data for each phase, we can figure out which applicants successfully passed the previous phase by looking at the common *id*s between two phases. For instance, applicants included in the phase II data set are the ones who passed phase I. Following this logic, we create a new variable in each phase that takes value of 1 if the candidate passed this phase, and 0 otherwise. 
 
-To investigate the question, we drew out some exploratory plots. We found that in the phase I selection, all the candidates who did not submit a CV or a cover letter did not pass phase I, as *Figure 1* and *Figure 2* shows. Hence, if a candidate did not submit these two files, then other potential determinants for success like *GPA* and *work experience* become irrelevant in determining whether the candidate passes the current phase. Therefore, we decide to filter out the observations that do not have a CV/cover letter present in phase I, which reduces out sample size from 613 observations to 355 observations. Even though there is a large reduction in the sample size, we think the manipulation is necessary as we can investigate how other factors play a role in the selection process. 
-
-### Result
-
 After creating the indicator variable, we then looked at the proportion of different gender passing each phase. Referring to *Table 1*, in phase I, 48.3% male, 50.7% female, and 1% prefer not to say passed this phase. There seems to be an even split between males and females who successfully passed the phase. Moving on to phase II, the split between males and females become a bit uneven, as among all those passed the phase, 68.2% are males while 31.8% are females, with 0% of prefer not to say. Lastly, in phase III, the ratio of males to females who passed this phase becomes 4:1. This preliminary observation leads us to think whether the selection algorithm is based solely on candidates' skills, or does gender affects the probability of a candidate being selected as successful candidate? If gender does play a role, then how big is the impact?
 
+<<<<<<< HEAD
+### Data manipulation
+=======
+To investigate the question, we drew out some exploratory plots. We found that in the phase I selection, all the candidates who did not submit a *CV* or a *cover letter*, or did not have any *extracurriculars* did not pass phase I, as *Figure 1*, *Figure 2*, and *Figure 3* shows. Hence, if a candidate did not submit these two files or does not have any extracurriculars, then other potential determinants for success like *GPA* and *work experience* become irrelevant in determining whether the candidate passes the current phase. Therefore, we decide to filter out the observations that do not have a CV/cover letter present in phase I, which reduces out sample size from 613 observations to 355 observations. Even though there is a large reduction in the sample size, we think the manipulation is necessary as we can investigate how other factors play a role in the selection process. 
+>>>>>>> 3691330895bb9e059814e58f9cc56c5398351ed9
+
 ### Method
+
+For phase-I data, we mainly utilize summary tables and visualizations to determine whether there is a potential gender bias during the selection process. 
+
+For phase-II data, we know that the AI focuses on the four skills that the candidates possess, so we build a model to see which factors are important in this phase. Since we have a binary response of whether each candidate passed phase-II, we lean on adopting a logistic regression model. To check the assumptions for the logistic regression model, we start by looking at our observations, which are all independent of each other. With a logit link, we expect there to be a linear relationship among the explanatory variables and the transformed response. Hence, we include each candidate's scores on *technical skills*, *writing skills*, *leadership presence* and *speaking skills* as our predictors in the model. With the predictors and response specified, the model can be written out as follows: $$log(\frac{\mu_2}{1-\mu_2}) = \beta_0 + \beta_1 *\text{Technical skills} + \beta_2 *\text{Writing skills} + \beta_3 * \text{Leadership presence} + \beta_4 * \text{Speaking skills}$$ 
+
+$\mu$: the probability of a candidate passing phase-II
+$\beta_i$: coefficient for each variable
+
+Finally, in phase-III of the hiring, the candidates have two interviews with two interviewers. The HR team will then decide which candidates to hire based on the interview scores. Due to a limited number of observations in the final phase, and a relatively small number of variables, we decide to use summary tables and visualizations to draw on conclusions.
+
+### Results
+
+#### Phase-I
 
 ```{r}
 # filter out observations without cv or cover letter
@@ -187,7 +213,6 @@ Table 2: Proportion of candidates passing Phase-I by gender with filtered observ
 | Prefer not to say | 0.02          | 0.01 |
 | Woman             | 0.51          | 0.51 |
 
-After filtering out the observations that do not submit a CV or a cover letter, we again make a summary table that contains the proportion of candidates passing Phase-I of the hiring process by gender. From *Table 2*, we see that among those candidates who successfully passed Phase-I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say". Hence, from the table summary, it seems that the Phase-I hiring is pretty fair across genders. 
 
 ```{r}
 h1f_male <- hire_phase1_filtered %>% 
@@ -211,8 +236,12 @@ colnames(sum_filtered_table) <- c("Gender", "Number", "GPA", "Extracurricular", 
 kable(sum_filtered_table, caption = "Table 3: Median statistics by gender")
 ```
 
+From *Table 2*, we see that among those candidates who successfully passed Phase-I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say". Hence, from the table summary, it seems that the Phase-I hiring is pretty fair across genders. 
+
 *Table 3* displays the median statistics for *GPA*, number of *Extracurricular*, and the number of *Work experience* the candidates have by gender. There is a relatively even split between the number of *male* and *female* candidates, while *prefer not to say* only has 4 candidates. Despite this, the median values for each of the variables seem to be pretty consistent across different genders. The only discrepancy appears to be *prefer not to say* having a lower *GPA* than the other two genders, potentially due to the small number of observations. 
 
+
+#### Phase-II
 
 ```{r}
 # build model
@@ -241,15 +270,11 @@ knitr::kable(hire2_mod_table, align = c("r", "r"), caption = "Table 4.Coefficien
 # lmtest::lrtest(hire2_mod, hire2_mod_wg)
 ```
 
-With phase-II data, the model can be written out as follows: $$log(\frac{\mu_2}{1-\mu_2}) = \beta_0 + \beta_1 *\text{Technical skills} + \beta_2 *\text{Writing skills} + \beta_3 * \text{Leadership presence} + \beta_4 * \text{Speaking skills}$$. 
-
-$\mu$: the probability of a candidate passing phase-II
-$\beta_i$: coefficient for each variable
-
-According to the model, we include each candidate's scores on *technical skills*, *writing skills*, *leadership presence* and *speaking skills* as our predictors. From the results, we see that the effect of all four predictors are significantly positive, with the odds ratio for *technical skills*, *writing skills*, *leadership presence*, and *speaking skills* being 1.08, 1.09, 2.53, and 2.01. The p-values for the 4 predictors are all significant. Taking the odds ratio of *technical skills* as an example, it means that with a 1 unit increase in *technical skills*, the odds of being a successful candidate in phase-II is 1.08 times higher. 
+From the results, we see that the effect of all four predictors are significantly positive, with the odds ratio for *technical skills*, *writing skills*, *leadership presence*, and *speaking skills* being 1.08, 1.09, 2.53, and 2.01. The p-values for the 4 predictors are all significant. Taking the odds ratio of *technical skills* as an example, it means that with a 1 unit increase in *technical skills*, the odds of being a successful candidate in phase-II is 1.08 times higher. 
 
 To investigate whether gender plays a significant role in the phase-II selection, we include *gender* as our predictor in addition to the original four. Then, by performing a Likelihood ratio test, we found that the p-value is around 0.41, suggesting that we lean more towards the simpler model that does not include *gender* as one of its predictors. 
 
+#### Phase-III
 
 ```{r, fig.cap="Histogram of the total scores vs. whether the candidate with the score passed phase-III"}
 hire_2_3 <- hire_phase3 %>% 
@@ -278,7 +303,7 @@ colnames(hire2_temp) <- c("Applicant id", "Gender", "Technical skills", "Writing
 knitr::kable(hire2_temp, caption = "Table 4.Phase-II information for the two applicants with a tie in phase III")
 ```
 
-*Figure 2* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations.
+*Figure 2* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations and summarize the scores obtained by these two candidates in **Table X**. From the table, the female candidate have higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does. On the other hand, the male candidate has higher scores in *technical skills* than the female candidate does.
 
 ### Conclusions
 
@@ -504,14 +529,11 @@ tidy_data%>%
 ```
 
 
-
 ## Is the amount of salary determined based only on the talents and performance of the employees?
 
-### Data manipulation
+### Data & exploratory analysis
 
 We reformatted the values of *salary* in the original data set by taking off the "$" and "," and change the values from character values to numeric values for latter analysis. In addition to this, we re-level some factors for better display and ease of understanding. For instance, we re-level the factor of *seniority role* to reflect the ordering of the job title, from the least to the most senior.
-
-### Exploratory plots/summary tables
 
 ```{r}
 # salary distribution filled by gender
@@ -536,8 +558,6 @@ colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
 knitr::kable(sum_table, caption = "Mean productivity and mean salary by gender")
 ```
 
-*Table 7* shows the average *productivity* and *salary* by gender. From the table, we see that females possess the highest average productivity of 50.44, but the lowest average salary among the three genders. On the other hand, males have the second highest average productivity of 48.99 and the highest average salary. 
-
 ```{r, fig.cap="Salary vs. gender and leadership for level"}
 options("scipen" = 10)
 curr_1 %>% 
@@ -553,9 +573,22 @@ curr_1 %>%
 # table(curr_1$gender, curr_1$leadership_for_level)
 ```
 
+*Table 7* shows the average *productivity* and *salary* by gender. From the table, we see that females possess the highest average productivity of 50.44, but the lowest average salary among the three genders. On the other hand, males have the second highest average productivity of 48.99 and the highest average salary. 
+
 *Figure 6* displays the histogram of *salary* by *gender* and *leadership role*. Looking at the distribution of *salary* by *leadership role*, we see that the distribution is a bit right skewed, which is common as there are usually fewer employees with very high salaries than the ones with lower salaries. One thing worth notice is that the employees that *exceeds expectations* are all males, while the employees that *needs improvement* are all females. Despite this, employees that *exceeds expectations* seem to overall have slightly higher salaries than the employees that *needs improvement* do. 
 
-### Method (Model)
+### Method
+
+Since we have repeated measurement in the data set of all the employees and a continuous response variable: *salary*, we consider fitting a linear mixed model, treating the *ids* for the employees as random effects. The fixed effects we consider fitting in the model are *productivity*, *leadership role*, *seniority role*, and *gender*, as we are interested whether the former three variables help quantify an employee's talents and abilities, while we want to figure out whether *gender* also plays a role in determining an employee's salary. Hence, the model we try to fit can be written out as follows: $$Y_{ij} = \boldsymbol X_{ij} \boldsymbol \beta + \epsilon$$. 
+
+$Y_{ij}$: repeated measures j for salary on individual i, the response variable \
+$\boldsymbol X$: model matrix for the fixed effects: *productivity*, *leadership role*, *seniority role*, and *gender* \
+$\boldsymbol \beta$: the effect of covariates on the mean outcome \
+$\epsilon$: residual errors 
+
+To verify our assumptions for the usage of the model, firstly, we have a continuous response variable. Secondly, we identified *employee id* as our grouping variable resulting from the repeated measurement, so we include this grouping variable as our random effect. Lastly, even though the observations within each subject are not independent, the subjects themselves are independent. 
+
+### Results
 
 ```{r}
 # model without gender
@@ -591,19 +624,11 @@ colnames(salary_mod_table) <- salary_colnames
 knitr::kable(salary_mod_table, align = c("r", "r"), caption = "Model summary for salary")
 ```
 
-Since we have repeated measurement in the data set of all the employees and a continuous response variable: *salary*, we consider fitting a linear mixed model, treating the *ids* for the employees as random effects. The fixed effects we consider fitting in the model are *productivity*, *leadership role*, *seniority role*, and *gender*, as we are interested whether the former three variables help quantify an employee's talents and abilities, while we want to figure out whether *gender* also plays a role in determining an employee's salary. Hence, the model we try to fit can be written out as follows: $$Y_{ij} = \boldsymbol X_{ij} \boldsymbol \beta + \epsilon$$. 
-
-$Y_{ij}$: repeated measures j for salary on individual i, the response variable \
-$\boldsymbol X$: model matrix for the fixed effects: *productivity*, *leadership role*, *seniority role*, and *gender* \
-$\boldsymbol \beta$: the effect of covariates on the mean outcome \
-$\epsilon$: residual errors 
-
-To verify our assumptions for the usage of the model, firstly, we have a continuous response variable. Secondly, we identified *employee id* as our grouping variable resulting from the repeated measurement, so we include this grouping variable as our random effect. Lastly, even though the observations within each subject are not independent, the subjects themselves are independent. After building models that include *employee id* as only random intercept and random intercept and slope (interacting with *gender*), the likelihood ratio test tells us to adopt the model with only the random intercept (p = 0.9246). 
+After building models that include *employee id* as only random intercept and random intercept and slope (interacting with *gender*), the likelihood ratio test tells us to adopt the model with only the random intercept (p = 0.9246). 
 
 From *table 8*, we see that the grand average of the salary is 31900.93. Predictors that are significant are: *leadership role: exceeds expectations*, *leadership role: needs improvement*, and all levels of the *seniority role*, since the 95% confidence intervals for these coefficients do not include 0. Among these important covariates, both levels of the *leadership role* have large negative effects, while all levels of the *seniority role* have large positive effects on salary.
 
 To determine whether *gender* plays a significant role in the determination of salary, we compare our current model with a nested model that have the same covariates as in our current model but without *gender*. The result of the model comparison using the likelihood ratio test is presented in table **TODO**. We see that the p-value appears to be really small (< 2.2e-16), so we expect having *gender* to improve our model by a significant amount. 
-
 
 ### Conclusions
 
@@ -611,7 +636,6 @@ To determine whether *gender* plays a significant role in the determination of s
 From the visualizations and model above, the relationship between salary with covariates like productivity, leadership role, seniority role and gender shows that male employees tend to receive more benefits than females do. The visualization **Figure 6** and the proportion on average productivity exhibits unfairness between different genders. Between genders and leadership roles, some females think that salary still needs to be improved, while the male leaders think the opposite, that their benefits have already exceeded their expectations. Moreover, females who have the highest productivity but turn out have the lowest average salary, while the males have lower productivity resulting in a much higher average salary. The result from the linear mixed model we fitted, one with gender as a covariates and one without, the likelihood ratio test shows that gender does play a crucial role in salary. Holding other variables constant, female employees have 2022.17 dollars less than the average salary, while males have 679.10 dollars even more than the average.
 
 There is a slight discrepancy that our likelihood ratio test and 95% confidence interval give us different results. The likelihood ratio test says we should use the one with gender included, but 95% C.I. gives us the opposite as it is insignificant. Based on the evidence from previous proportion tables and visualizations, we tend to believe that there are still some differences when gender comes in, both in hiring processes and employees' benefits.
-
 
 
 ## Discussion
