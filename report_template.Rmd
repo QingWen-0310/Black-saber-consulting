@@ -83,17 +83,14 @@ the following report will be analyzing the data given by Black Saber Consulting 
 - Is the amount of salary determined based only on the talents and performance of the employees?
 
 
-<<<<<<< HEAD
+
 \newpage
-- Is gender a significant determinant of being a successful applicant in each hiring phase?
-=======
+
 ## Is gender a significant determinant of being a successful applicant in each hiring phase?
 
 ### Data and exploratory analysis
->>>>>>> 3691330895bb9e059814e58f9cc56c5398351ed9
 
-### Data Manipulation & Exploratory plots/summary tables
-### Variables
+#### Variables
 
 - *cover_letter*: categorical, whether the applicant submitted a cover letter
 - *cv*: categorical, whether the applicant submitted a CV
@@ -177,11 +174,7 @@ By looking at the data for each phase, we can figure out which applicants succes
 
 After creating the indicator variable, we then looked at the proportion of different gender passing each phase. Referring to *Table 1*, in phase I, 48.3% male, 50.7% female, and 1% prefer not to say passed this phase. There seems to be an even split between males and females who successfully passed the phase. Moving on to phase II, the split between males and females become a bit uneven, as among all those passed the phase, 68.2% are males while 31.8% are females, with 0% of prefer not to say. Lastly, in phase III, the ratio of males to females who passed this phase becomes 4:1. This preliminary observation leads us to think whether the selection algorithm is based solely on candidates' skills, or does gender affects the probability of a candidate being selected as successful candidate? If gender does play a role, then how big is the impact?
 
-<<<<<<< HEAD
-### Data manipulation
-=======
 To investigate the question, we drew out some exploratory plots. We found that in the phase I selection, all the candidates who did not submit a *CV* or a *cover letter*, or did not have any *extracurriculars* did not pass phase I, as *Figure 1*, *Figure 2*, and *Figure 3* shows. Hence, if a candidate did not submit these two files or does not have any extracurriculars, then other potential determinants for success like *GPA* and *work experience* become irrelevant in determining whether the candidate passes the current phase. Therefore, we decide to filter out the observations that do not have a CV/cover letter present in phase I, which reduces out sample size from 613 observations to 355 observations. Even though there is a large reduction in the sample size, we think the manipulation is necessary as we can investigate how other factors play a role in the selection process. 
->>>>>>> 3691330895bb9e059814e58f9cc56c5398351ed9
 
 ### Method
 
