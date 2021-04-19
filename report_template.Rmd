@@ -12,7 +12,7 @@ output:
     toc_depth: '2'
     df_print: paged
 lang: en
-subtitle: biases within employment process
+subtitle: hiring process and employees' benefits
 titlepage: yes
 titlepage-color: 51c6b9
 titlepage-text-color: FFFFFF
@@ -72,8 +72,8 @@ _This part of the report is much more comprehensive than the executive summary. 
 ## Introduction 
 #what the report will cover
 #setting scope and expectations
-
-The following report will be analyzing the data given by Black Saber Consulting Company regarding their company potential biases within hiring and remuneration processes. The report includes an abstract, data exploration, data analysis, model building, executive summary, result and conclusions. The study is built upon five data sets from Black Saber Consulting Company of different phases: three hiring phases, the final hires, and the current employee information. The report is done through the software R-studio and JupyterHub. In the data explore section, the data shall be examined at first to check for correlations and potential variables to be used for data analysis and model building section. The statisticians choose the best fitted model and explain in the model building section. Finally the result section includes graphs and plots of the final evidence to answer the raised research question, which will be answered in the conclusion section. The report is confidential and will solely be used for the Black Saber Consulting Company only.
+As it is requested by the Black Saber Consulting Company due to the worry of potential biases existed within their employee's benefits and hiring process, 
+the following report will be analyzing the data given by Black Saber Consulting Company regarding their company potential biases within hiring and remuneration processes. The report includes an abstract, data exploration, data analysis, model building, executive summary, result and conclusions. The study is built upon five data sets from Black Saber Consulting Company of different phases: three hiring phases, the final hires, and the current employee information. The report is done through the software R-studio and JupyterHub. In the data explore section, the data shall be examined at first to check for correlations and potential variables to be used for data analysis and model building section. The statisticians choose the best fitted model and explain in the model building section. Finally the result section includes graphs and plots of the final evidence to answer the raised research question, which will be answered in the conclusion section. The report is confidential and will solely be used for the Black Saber Consulting Company only.
 
 
 ### Research questions
@@ -83,7 +83,6 @@ The following report will be analyzing the data given by Black Saber Consulting 
 - Does gender affect how many promotions an employee during its employment?
 
 - Is the amount of salary determined based only on the talents and performance of the employees?
-
 
 
 ### Data Manipulation & Exploratory plots/summary tables
