@@ -1,6 +1,6 @@
 ---
-title: "Report title"
-author: "Report prepared for Black Saber Software by Eminence Analytics"
+title: "Statistical Analysis Regarding Black Saber Company Employment"
+author: "Report prepared for Black Saber Software by ProDasta Consulting Company"
 date: '2021-04-21'
 output:
   pdf_document:
@@ -12,7 +12,7 @@ output:
     toc_depth: '2'
     df_print: paged
 lang: en
-subtitle: Subtitle
+subtitle: biases within employment process
 titlepage: yes
 titlepage-color: 51c6b9
 titlepage-text-color: FFFFFF
@@ -73,11 +73,10 @@ _This part of the report is much more comprehensive than the executive summary. 
 #what the report will cover
 #setting scope and expectations
 
-The following report will be analyzing the data given by Black Saber Consulting Company regarding their company potential biases within hiring and remuneration processes. The report includes an abstract, data exploration, data analysis, model building, executive summary, result and conclusions. The study is built upon five data sets from Black Saber Consulting Company of different phases: three hiring phases, the final hires, and the current employee information. The report is done through the software R-studio and JupyterHub. In the data explore section, the data shall be examined at first to check for correlations and potential variables to be used for data analysis and model building section. The statisticians choose the best fitted model and explain in the model building section. Finally the result section includes graphs and plots of the final evidence to answer the raised research question, which will be answered in the conclusion section. The report is confidential and will be used for the Black Saber Consulting Company only.
+The following report will be analyzing the data given by Black Saber Consulting Company regarding their company potential biases within hiring and remuneration processes. The report includes an abstract, data exploration, data analysis, model building, executive summary, result and conclusions. The study is built upon five data sets from Black Saber Consulting Company of different phases: three hiring phases, the final hires, and the current employee information. The report is done through the software R-studio and JupyterHub. In the data explore section, the data shall be examined at first to check for correlations and potential variables to be used for data analysis and model building section. The statisticians choose the best fitted model and explain in the model building section. Finally the result section includes graphs and plots of the final evidence to answer the raised research question, which will be answered in the conclusion section. The report is confidential and will solely be used for the Black Saber Consulting Company only.
 
 
 ### Research questions
-_Use bullet points to to describe the research questions you are going to address. Write in full sentences._
 
 - Is gender a significant determinant of being a successful applicant in each hiring phase?
 
@@ -85,7 +84,7 @@ _Use bullet points to to describe the research questions you are going to addres
 
 - Is the amount of salary determined based only on the talents and performance of the employees?
 
-## Is gender a significant determinant of being a successful applicant in each hiring phase?
+
 
 ### Data Manipulation & Exploratory plots/summary tables
 
@@ -129,7 +128,6 @@ Woman             & 0.508             & 0.507    & 0.522             & 0.318    
 \end{table}
 
 ```{r, fig.cap="Proportion of people passed phase I by gender and cv"}
-
 hire_phase1_temp <- hire_phase1 %>% 
   mutate(cover_letter = as.factor(ifelse(cover_letter == 0, "Not submitted", "Submitted"))) %>% 
   mutate(cv = as.factor(ifelse(cv == 0, "No CV", "Have CV"))) %>% 
@@ -149,7 +147,6 @@ hire_phase1_temp %>%
 ```
 
 ```{r, fig.cap="Proportion of people passed phase I by gender and cover letter"}
-
 # proportion of successful applicants vs. gender and cover letter
 hire_phase1_temp %>% 
   ggplot(aes(x = cover_letter, fill = as.factor(pass))) +
@@ -161,6 +158,8 @@ hire_phase1_temp %>%
   labs(fill = "Pass", x = "Cover letter submission", y = "Proportion")
 
 ```
+
+
 
 ### Data manipulation?? Not sure
 
@@ -431,8 +430,6 @@ _In this section you will summarize your findings across all the research questi
 # Consultant information
 ## Consultant profiles
 
-*This section is only marked for completeness, clarity and professionalism, not 'truth' so you can write it as if we're a few years in the future. Put your current degree in as completed and/or add your first choice grad school program, whatever you like. What skills related skills would you most like to highlight? What job title do you want?*
-
 **Ke Deng**. Ke Deng is a junior analyst at the ProDasta Consulting Company, where she does report writing and data analysis for clients. She graduated from the University of Toronto with a Bachelor degree of Science, and is currently enrolled in the graduate program. Ke specializes in Statistics, with a focus in economics. She has been with the ProDasta Consulting Company since the company started. Ke is currently employed as the report writer and consulter of the company and she is great at writing and polishing reports for the clients.
 
 **Wenqing Hao**. Wenqing Hao is an experienced analyst at the ProDasta Consulting Company, also one of the four co-founders  of the Company. She holds a Bachelor degree of Science from the University of Toronto, focusing on both Statistics and Financial economics. She has a strong background of  managing business operations and finance projects. Over the past few years, she cooperates well and closely with the other three co-founders, generating a rather professional team to successfully satisfy clients’ various requests.    
@@ -451,4 +448,3 @@ _In this section you will summarize your findings across all the research questi
 3. We support and welcome any statisticians in their professional field. We act with integrity and dignity toward the fellow statisticians, and provide opportunities for them to the professional field. 
 
 
-__Final advice: KNIT EARLY AND OFTEN!__
