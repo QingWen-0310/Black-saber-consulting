@@ -141,8 +141,6 @@ hire_phase1_temp %>%
   ylab("Proportion") +
   theme_minimal() +
   labs(fill = "Pass", x = "CV submission", y = "Proportion")
-
-
 ```
 
 ```{r, fig.cap="Proportion of people passed phase I by gender and cover letter"}
@@ -155,10 +153,19 @@ hire_phase1_temp %>%
   ylab("Proportion") +
   theme_minimal() +
   labs(fill = "Pass", x = "Cover letter submission", y = "Proportion")
-
 ```
 
-
+```{r, fig.cap="Proportion of people passed phase I by gender and extracurriculars"}
+# proportion of successful applicants vs. gender and work experience
+hire_phase1 %>% 
+  ggplot(aes(x = extracurriculars, fill = as.factor(pass))) +
+  geom_bar(position = "fill") +
+  facet_wrap(~gender) +
+  scale_fill_manual(values = c("#fa8154", "#51c6b9"))+
+  ylab("Proportion") +
+  theme_minimal() +
+  labs(fill = "Pass", x = "extracurricular", y = "Proportion")
+```
 
 ### Data manipulation?? Not sure
 

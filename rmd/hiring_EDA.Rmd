@@ -69,6 +69,16 @@ hire_phase1 %>%
   ylab("Proportion") +
   theme_minimal() +
   labs(fill = "Pass", x = "Cover letter", y = "Proportion")
+
+# proportion of successful applicants vs. gender and work experience
+hire_phase1 %>% 
+  ggplot(aes(x = extracurriculars, fill = as.factor(pass))) +
+  geom_bar(position = "fill") +
+  facet_wrap(~gender) +
+  scale_fill_manual(values = c("#fa8154", "#51c6b9"))+
+  ylab("Proportion") +
+  theme_minimal() +
+  labs(fill = "Pass", x = "extracurricular", y = "Proportion")
 ```
 
 - applicants without a cv did not pass phase I
@@ -91,6 +101,7 @@ summary(hire1_mod_wg)
 
 lmtest::lrtest(hire1_mod, hire1_mod_wg)
 ```
+
 
 - gender does not seem to play a role in selection process
 - we pick `hire1_mod` as our model for phase-I
