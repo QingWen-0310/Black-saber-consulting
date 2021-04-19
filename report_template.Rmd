@@ -66,8 +66,6 @@ _Guidelines for the executive summary:_
 
 \newpage
 # Technical report
-_This part of the report is much more comprehensive than the executive summary. The audience is statistics/data-minded people, but you should NOT include code or unformatted R output here._
-
 
 ## Introduction 
 #what the report will cover
@@ -85,9 +83,11 @@ the following report will be analyzing the data given by Black Saber Consulting 
 - Is the amount of salary determined based only on the talents and performance of the employees?
 
 
-### Data Manipulation & Exploratory plots/summary tables
+\newpage
+- Is gender a significant determinant of being a successful applicant in each hiring phase?
 
-#### Variables
+### Data Manipulation & Exploratory plots/summary tables
+### Variables
 
 - *cover_letter*: categorical, whether the applicant submitted a cover letter
 - *cv*: categorical, whether the applicant submitted a CV
@@ -160,7 +160,7 @@ hire_phase1_temp %>%
 
 
 
-### Data manipulation?? Not sure
+### Data manipulation
 
 By looking at the data for each phase, we can figure out which applicants successfully passed the previous phase by looking at the common *id*s between two phases. For instance, applicants included in the phase II data set are the ones who passed phase I. Following this logic, we create a new variable in each phase that takes value of 1 if the candidate passed this phase, and 0 otherwise. 
 
@@ -208,7 +208,7 @@ work_median <- c(1.00, 1.00, 1.00)
 
 sum_filtered_table <- data_frame(gen, num, gpa_median, extra_median, work_median)
 colnames(sum_filtered_table) <- c("Gender", "Number", "GPA", "Extracurricular", "Work experience")
-kable(sum_filtered_table, caption = "Median statistics by gender")
+kable(sum_filtered_table, caption = "Table 3: Median statistics by gender")
 ```
 
 *Table 3* displays the median statistics for *GPA*, number of *Extracurricular*, and the number of *Work experience* the candidates have by gender. There is a relatively even split between the number of *male* and *female* candidates, while *prefer not to say* only has 4 candidates. Despite this, the median values for each of the variables seem to be pretty consistent across different genders. The only discrepancy appears to be *prefer not to say* having a lower *GPA* than the other two genders, potentially due to the small number of observations. 
@@ -232,7 +232,7 @@ hire2_colnames <- c("Estimates", "95% CI", "P-value")
 hire2_mod_table <- cbind(ests_h2, cis_h2, pval_h2)
 rownames(hire2_mod_table) <- hire2_rownames
 colnames(hire2_mod_table) <- hire2_colnames
-knitr::kable(hire2_mod_table, align = c("r", "r"), caption = "Coefficient estimates for the logistic model built for hiring phase-II")
+knitr::kable(hire2_mod_table, align = c("r", "r"), caption = "Table 4.Coefficient estimates for the logistic model built for hiring phase-II")
 ```
 
 ```{r}
@@ -275,7 +275,7 @@ hire2_temp <- hire_phase2 %>%
   select(applicant_id, gender, technical_skills, writing_skills, leadership_presence, speaking_skills)
 colnames(hire2_temp) <- c("Applicant id", "Gender", "Technical skills", "Writing skills", "Leadership presence", "Speaking skills")
 
-knitr::kable(hire2_temp, caption = "Phase-II information for the two applicants with a tie in phase III")
+knitr::kable(hire2_temp, caption = "Table 4.Phase-II information for the two applicants with a tie in phase III")
 ```
 
 *Figure 2* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations.
@@ -286,15 +286,22 @@ As *Table 4* shows, the male has higher scores in *technical skills*, while the 
 
 In both Phase I and Phase II, we fit generalized linear models on different variables in each phase, and use likelihood ratio tests to find out whether gender plays an important role in passing rate. In phase I, we assess the impact of GPA, extracurricular activities and work experiences on passing status; for phase II, technical skills, writing skills, leadership presence and speaking skills are considered. Analyzing their odds ratios, these variables all have remarkable effects on whether candidates go to the next round smoothly. On the other hand, variable gender does not play a role here. The fitted models and the likelihood ratio tests tell us that gender does not have a noticeable impact on the final result, we tend to choose a simpler model that excludes the impact of gender here. Therefore, we do not think gender is a significant determinant of being a successful applicant in each hiring phase.
 
+
+
 ## Promotion process
 ##Does gender affect how many promotions an employee during its employment?
 
+- *employee id*: numerical, records as each employee's identity number
+- *gender*, categorical, employee's gender, including man, woman and prefer not to say
+- *team*, categorical, employee's team, including Client services, Data, Design Legal and financial, Marketing and sales, Operations, People and talent, and Software
+- *financial_q*, categorical, the working period of the employee
+- *role_seniority*, categorical, the employee's job position at the company
+- *leadership_for_level*,categorical, quality of demonstrated leadership, taking into account of the role level of the employee
+- *productivity*, numerical, work output of the employee, productivies of 50 are considered as satisfactory, and above 50 indicates better than expected
+
 Creating and checking the y-variable:
-```{r}
+```{r, warning=FALSE}
 cleaned_data <- curr_employee
-#cleaned_data <- cleaned_data%>%
-#  group_by(employee_id) %>%
-#  count()
 cleaned_data <- cleaned_data%>%
   mutate(role_seniority, role_num =case_when(
     role_seniority == "Entry-level"~1,
@@ -328,12 +335,7 @@ table_promotion = table(cleaned_data$get_promotion)
 
 cleaned_data <- cleaned_data%>%
   filter(gender!="Prefer not to say")
-```
 
-
-
-## make data tidy
-```{r}
 tidy_data <- slice(cleaned_data, 0)
 for (n in 2:6789){
    if (cleaned_data$employee_id[n] == cleaned_data$employee_id[n-1]){
@@ -342,9 +344,7 @@ for (n in 2:6789){
                        cleaned_data$role_num[n],cleaned_data$get_promotion[n])
    }
 }
-```
 
-```{r}
 tidy_data<-tidy_data %>%
   mutate(role_seniority=fct_relevel(role_seniority,"Director",after = 7))
 ```
@@ -376,9 +376,9 @@ observation: for those getting promoted, only males receive the feedback of lead
 
 2. Summaries of the categorical variables
 ```{r}
-unique(tidy_data$role_seniority)
-unique(tidy_data$team)
-unique(tidy_data$employee_id)
+#unique(tidy_data$role_seniority)
+#unique(tidy_data$team)
+#unique(tidy_data$employee_id)
 ```
 there are nine levels, eight teams and 579 employees(already excluding people who filled in "prefer not to say" ) 
 
@@ -624,11 +624,6 @@ _In this section you will summarize your findings across all the research questi
 \newpage
 # Consultant information
 ## Consultant profiles
-
-<<<<<<< HEAD
-**Ke Deng**. Ke Deng is a junior analyst at the ProDasta Consulting Company, where she does report writing and data analysis for clients. She graduated from the University of Toronto with a Bachelor degree of Science, and is currently enrolled in the graduate program. Ke specializes in Statistics, with a focus in economics. She has been with the ProDasta Consulting Company since the company started. Ke is currently employed as the report writer and consulter of the company and she is great at writing and polishing reports for the clients.
-=======
-*This section is only marked for completeness, clarity and professionalism, not 'truth' so you can write it as if we're a few years in the future. Put your current degree in as completed and/or add your first choice grad school program, whatever you like. What skills related skills would you most like to highlight? What job title do you want?*
 
 **Ke Deng**. Ke Deng is a junior analyst at the ProDasta Consulting Company, where she does report writing and data analysis for clients. She graduated from the University of Toronto with a Bachelor degree of Science, and is currently enrolled in the graduate program. Ke specializes in Statistics, with a focus in economics. She has been with the ProDasta Consulting Company since the company started. Ke is currently employed as the report writer and consultant of the company and she is great at writing and polishing reports for the clients.
 >>>>>>> 65a6431503dc1738d0253faae49797516bcd54fc
