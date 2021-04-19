@@ -262,7 +262,6 @@ knitr::kable(hire2_mod_table, align = c("r", "r"), caption = "Coefficient estima
 # lmtest::lrtest(hire2_mod, hire2_mod_wg)
 ```
 
-
 From the results, we see that the effect of all four predictors are significantly positive, with the odds ratio for *technical skills*, *writing skills*, *leadership presence*, and *speaking skills* being 1.08, 1.09, 2.53, and 2.01. The p-values for the 4 predictors are all significant. Taking the odds ratio of *technical skills* as an example, it means that with a 1 unit increase in *technical skills*, the odds of being a successful candidate in phase-II is 1.08 times higher. 
 
 To investigate whether gender plays a significant role in the phase-II selection, we include *gender* as our predictor in addition to the original four. Then, by performing a Likelihood ratio test, we found that the p-value is around 0.41, suggesting that we lean more towards the simpler model that does not include *gender* as one of its predictors. 
@@ -296,7 +295,7 @@ colnames(hire2_temp) <- c("Applicant id", "Gender", "Technical skills", "Writing
 knitr::kable(hire2_temp, caption = "Phase-II information for the two applicants with a tie in phase III")
 ```
 
-*Figure 2* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations.
+*Figure 2* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations and summarize the scores obtained by these two candidates in **Table X**. From the table, the female candidate have higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does. On the other hand, the male candidate has higher scores in *technical skills* than the female candidate does.
 
 ### Conclusions
 
@@ -523,14 +522,11 @@ tidy_data%>%
 ```
 
 
-
 ## Is the amount of salary determined based only on the talents and performance of the employees?
 
-### Data manipulation
+### Data & exploratory analysis
 
 We reformatted the values of *salary* in the original data set by taking off the "$" and "," and change the values from character values to numeric values for latter analysis. In addition to this, we re-level some factors for better display and ease of understanding. For instance, we re-level the factor of *seniority role* to reflect the ordering of the job title, from the least to the most senior.
-
-### Exploratory plots/summary tables
 
 ```{r}
 # salary distribution filled by gender
@@ -555,8 +551,6 @@ colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
 knitr::kable(sum_table, caption = "Mean productivity and mean salary by gender")
 ```
 
-*Table 7* shows the average *productivity* and *salary* by gender. From the table, we see that females possess the highest average productivity of 50.44, but the lowest average salary among the three genders. On the other hand, males have the second highest average productivity of 48.99 and the highest average salary. 
-
 ```{r, fig.cap="Salary vs. gender and leadership for level"}
 options("scipen" = 10)
 curr_1 %>% 
@@ -572,9 +566,22 @@ curr_1 %>%
 # table(curr_1$gender, curr_1$leadership_for_level)
 ```
 
+*Table 7* shows the average *productivity* and *salary* by gender. From the table, we see that females possess the highest average productivity of 50.44, but the lowest average salary among the three genders. On the other hand, males have the second highest average productivity of 48.99 and the highest average salary. 
+
 *Figure 6* displays the histogram of *salary* by *gender* and *leadership role*. Looking at the distribution of *salary* by *leadership role*, we see that the distribution is a bit right skewed, which is common as there are usually fewer employees with very high salaries than the ones with lower salaries. One thing worth notice is that the employees that *exceeds expectations* are all males, while the employees that *needs improvement* are all females. Despite this, employees that *exceeds expectations* seem to overall have slightly higher salaries than the employees that *needs improvement* do. 
 
-### Method (Model)
+### Method
+
+Since we have repeated measurement in the data set of all the employees and a continuous response variable: *salary*, we consider fitting a linear mixed model, treating the *ids* for the employees as random effects. The fixed effects we consider fitting in the model are *productivity*, *leadership role*, *seniority role*, and *gender*, as we are interested whether the former three variables help quantify an employee's talents and abilities, while we want to figure out whether *gender* also plays a role in determining an employee's salary. Hence, the model we try to fit can be written out as follows: $$Y_{ij} = \boldsymbol X_{ij} \boldsymbol \beta + \epsilon$$. 
+
+$Y_{ij}$: repeated measures j for salary on individual i, the response variable \
+$\boldsymbol X$: model matrix for the fixed effects: *productivity*, *leadership role*, *seniority role*, and *gender* \
+$\boldsymbol \beta$: the effect of covariates on the mean outcome \
+$\epsilon$: residual errors 
+
+To verify our assumptions for the usage of the model, firstly, we have a continuous response variable. Secondly, we identified *employee id* as our grouping variable resulting from the repeated measurement, so we include this grouping variable as our random effect. Lastly, even though the observations within each subject are not independent, the subjects themselves are independent. 
+
+### Results
 
 ```{r}
 # model without gender
@@ -610,19 +617,11 @@ colnames(salary_mod_table) <- salary_colnames
 knitr::kable(salary_mod_table, align = c("r", "r"), caption = "Model summary for salary")
 ```
 
-Since we have repeated measurement in the data set of all the employees and a continuous response variable: *salary*, we consider fitting a linear mixed model, treating the *ids* for the employees as random effects. The fixed effects we consider fitting in the model are *productivity*, *leadership role*, *seniority role*, and *gender*, as we are interested whether the former three variables help quantify an employee's talents and abilities, while we want to figure out whether *gender* also plays a role in determining an employee's salary. Hence, the model we try to fit can be written out as follows: $$Y_{ij} = \boldsymbol X_{ij} \boldsymbol \beta + \epsilon$$. 
-
-$Y_{ij}$: repeated measures j for salary on individual i, the response variable \
-$\boldsymbol X$: model matrix for the fixed effects: *productivity*, *leadership role*, *seniority role*, and *gender* \
-$\boldsymbol \beta$: the effect of covariates on the mean outcome \
-$\epsilon$: residual errors 
-
-To verify our assumptions for the usage of the model, firstly, we have a continuous response variable. Secondly, we identified *employee id* as our grouping variable resulting from the repeated measurement, so we include this grouping variable as our random effect. Lastly, even though the observations within each subject are not independent, the subjects themselves are independent. After building models that include *employee id* as only random intercept and random intercept and slope (interacting with *gender*), the likelihood ratio test tells us to adopt the model with only the random intercept (p = 0.9246). 
+After building models that include *employee id* as only random intercept and random intercept and slope (interacting with *gender*), the likelihood ratio test tells us to adopt the model with only the random intercept (p = 0.9246). 
 
 From *table 8*, we see that the grand average of the salary is 31900.93. Predictors that are significant are: *leadership role: exceeds expectations*, *leadership role: needs improvement*, and all levels of the *seniority role*, since the 95% confidence intervals for these coefficients do not include 0. Among these important covariates, both levels of the *leadership role* have large negative effects, while all levels of the *seniority role* have large positive effects on salary.
 
 To determine whether *gender* plays a significant role in the determination of salary, we compare our current model with a nested model that have the same covariates as in our current model but without *gender*. The result of the model comparison using the likelihood ratio test is presented in table **TODO**. We see that the p-value appears to be really small (< 2.2e-16), so we expect having *gender* to improve our model by a significant amount. 
-
 
 ### Conclusions
 
@@ -630,7 +629,6 @@ To determine whether *gender* plays a significant role in the determination of s
 From the visualizations and model above, the relationship between salary with covariates like productivity, leadership role, seniority role and gender shows that male employees tend to receive more benefits than females do. The visualization **Figure 6** and the proportion on average productivity exhibits unfairness between different genders. Between genders and leadership roles, some females think that salary still needs to be improved, while the male leaders think the opposite, that their benefits have already exceeded their expectations. Moreover, females who have the highest productivity but turn out have the lowest average salary, while the males have lower productivity resulting in a much higher average salary. The result from the linear mixed model we fitted, one with gender as a covariates and one without, the likelihood ratio test shows that gender does play a crucial role in salary. Holding other variables constant, female employees have 2022.17 dollars less than the average salary, while males have 679.10 dollars even more than the average.
 
 There is a slight discrepancy that our likelihood ratio test and 95% confidence interval give us different results. The likelihood ratio test says we should use the one with gender included, but 95% C.I. gives us the opposite as it is insignificant. Based on the evidence from previous proportion tables and visualizations, we tend to believe that there are still some differences when gender comes in, both in hiring processes and employees' benefits.
-
 
 
 ## Discussion
