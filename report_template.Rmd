@@ -166,7 +166,7 @@ By looking at the data for each phase, we can figure out which applicants succes
 
 To investigate the question, we drew out some exploratory plots. We found that in the phase I selection, all the candidates who did not submit a CV or a cover letter did not pass phase I, as *Figure 1* and *Figure 2* shows. Hence, if a candidate did not submit these two files, then other potential determinants for success like *GPA* and *work experience* become irrelevant in determining whether the candidate passes the current phase. Therefore, we decide to filter out the observations that do not have a CV/cover letter present in phase I, which reduces out sample size from 613 observations to 355 observations. Even though there is a large reduction in the sample size, we think the manipulation is necessary as we can investigate how other factors play a role in the selection process. 
 
-### Result?? Not Sure
+### Result
 
 After creating the indicator variable, we then looked at the proportion of different gender passing each phase. Referring to *Table 1*, in phase I, 48.3% male, 50.7% female, and 1% prefer not to say passed this phase. There seems to be an even split between males and females who successfully passed the phase. Moving on to phase II, the split between males and females become a bit uneven, as among all those passed the phase, 68.2% are males while 31.8% are females, with 0% of prefer not to say. Lastly, in phase III, the ratio of males to females who passed this phase becomes 4:1. This preliminary observation leads us to think whether the selection algorithm is based solely on candidates' skills, or does gender affects the probability of a candidate being selected as successful candidate? If gender does play a role, then how big is the impact?
 
@@ -286,33 +286,225 @@ As *Table 4* shows, the male has higher scores in *technical skills*, while the 
 
 In both Phase I and Phase II, we fit generalized linear models on different variables in each phase, and use likelihood ratio tests to find out whether gender plays an important role in passing rate. In phase I, we assess the impact of GPA, extracurricular activities and work experiences on passing status; for phase II, technical skills, writing skills, leadership presence and speaking skills are considered. Analyzing their odds ratios, these variables all have remarkable effects on whether candidates go to the next round smoothly. On the other hand, variable gender does not play a role here. The fitted models and the likelihood ratio tests tell us that gender does not have a noticeable impact on the final result, we tend to choose a simpler model that excludes the impact of gender here. Therefore, we do not think gender is a significant determinant of being a successful applicant in each hiring phase.
 
-**TODO: phase-I: what do we expect from the tables and figures?**
+## Promotion process
+##Does gender affect how many promotions an employee during its employment?
 
-## Informative title for section addressing a research question
-
-_For each research question, you will want to briefly describe any data manipulation, show some exploratory plots/summary tables, report on any methods you use (i.e. models you fit) and the conclusions you draw from these_
-
+Creating and checking the y-variable:
 ```{r}
-# This chunk provides an example of some things you can do with RMarkdown to make your report creation process easier
+cleaned_data <- curr_employee
+#cleaned_data <- cleaned_data%>%
+#  group_by(employee_id) %>%
+#  count()
+cleaned_data <- cleaned_data%>%
+  mutate(role_seniority, role_num =case_when(
+    role_seniority == "Entry-level"~1,
+    role_seniority == "Junior I"~2,
+    role_seniority == "Junior II"~3,
+    role_seniority == "Senior I"~4,
+    role_seniority == "Senior II"~5,
+    role_seniority == "Senior III"~6,
+    role_seniority == "Manager"~7,
+    role_seniority == "Director"~8,
+    role_seniority == "Vice president"~9,
+    ))
 
-# read in the data
-black_saber_current_employees <- read_csv("data/black-saber-current-employees.csv")
+get_promoted=c(0)
+for (n in 1:6905){
+   if (cleaned_data$employee_id[n] == cleaned_data$employee_id[n+1]){
+     if (cleaned_data$role_num[n] == cleaned_data$role_num[n+1]){
+       get_promoted[n+1] = 0
+     }
+     else{
+       get_promoted[n+1] = 1
+     }
+   }
+  else{
+    get_promoted[n+1]=0
+  }
+}
+cleaned_data$get_promotion = get_promoted
 
-# create a visualisation
-my_plot <- black_saber_current_employees %>% 
-  ggplot(aes(x = productivity)) +
-  geom_histogram(colour = "grey", fill = "#6C3082") +
-  theme_minimal() +
-  labs(title = "Look! A title. But do you want a title or a caption for your report?", x = "This is a changed x label")
+table_promotion = table(cleaned_data$get_promotion)
 
-# save your plot in your images folder, you can specify the height and width, too
-# saving this means you can add the image to your exectuve summary without having to run or rerun the code, if you wish
-ggsave("images/example.png", width = 7, height = 4)
-
-# norice how the image is included with the ![](file/path.png) below
+cleaned_data <- cleaned_data%>%
+  filter(gender!="Prefer not to say")
 ```
 
-![](images/example.png)
+
+
+## make data tidy
+```{r}
+tidy_data <- slice(cleaned_data, 0)
+for (n in 2:6789){
+   if (cleaned_data$employee_id[n] == cleaned_data$employee_id[n-1]){
+       tidy_data[nrow(tidy_data)+1,]=list(cleaned_data$employee_id[n], cleaned_data$gender[n], cleaned_data$team[n], cleaned_data$financial_q[n],
+                       cleaned_data$role_seniority[n],cleaned_data$leadership_for_level[n],cleaned_data$productivity[n],cleaned_data$salary[n],
+                       cleaned_data$role_num[n],cleaned_data$get_promotion[n])
+   }
+}
+```
+
+```{r}
+tidy_data<-tidy_data %>%
+  mutate(role_seniority=fct_relevel(role_seniority,"Director",after = 7))
+```
+
+
+### Methods
+
+## explore data
+```{r}
+tidy_data %>% 
+  ggplot(aes(x = productivity,y=leadership_for_level, color = gender)) +
+  geom_point() +
+  theme_minimal() +
+  facet_wrap(~role_seniority)
+```
+
+```{r}
+## focus on observations only where employees are getting promoted
+data_promotion<-tidy_data%>%
+  filter(get_promotion==1)
+
+data_promotion %>% 
+  ggplot(aes(x = productivity,y=leadership_for_level, color = gender)) +
+  geom_point() +
+  theme_minimal() +
+  facet_wrap(~role_seniority)
+```
+observation: for those getting promoted, only males receive the feedback of leadership as "exceeds expectation" and almost no one(except one female at junior II) receive feedback of "needs improvement" can get promotion.So here might be one potential outlier.
+
+2. Summaries of the categorical variables
+```{r}
+unique(tidy_data$role_seniority)
+unique(tidy_data$team)
+unique(tidy_data$employee_id)
+```
+there are nine levels, eight teams and 579 employees(already excluding people who filled in "prefer not to say" ) 
+
+
+```{r}
+## get an approximate threshold of promoting productivity requirement seperately for each gender and also different role level
+data1<-tidy_data%>%
+  filter(get_promotion==1)%>%
+  group_by(role_seniority,gender,leadership_for_level)%>%
+  summarise(avg_productivity=mean(productivity),counts=n())
+data1
+```
+
+```{r}
+data1 %>% 
+  ggplot(aes(x = avg_productivity,y=leadership_for_level, color = gender)) +
+  geom_point() +
+  theme_minimal() +
+  facet_wrap(~role_seniority)
+```
+observation: for appropriate for level, we found that females have a relatively higher average productivity than males did in almost every role level promotion stage.Perhaps it is the indication od existence of interaction between gender and productivity!
+
+```{r}
+## vidualization
+data2 <- tidy_data %>%
+  filter(get_promotion == 1)%>%
+  filter(leadership_for_level=="Appropriate for level")
+
+data2%>%
+  ggplot( mapping = aes(x = role_seniority, y = productivity,colour=gender)) + 
+  geom_boxplot()
+```
+
+```{r}
+##explore team
+data3 <- tidy_data %>%
+  filter(get_promotion == 1,leadership_for_level=="Appropriate for level")%>%
+  group_by(team,role_seniority,gender,leadership_for_level)%>%
+  summarise(avg_productivity=mean(productivity),counts=n())
+```
+```{r}
+data3 %>% 
+  ggplot(aes(x = avg_productivity,y=role_seniority, color = gender)) +
+  geom_point() +
+  theme_minimal() +
+  facet_wrap(~team)
+```
+observation: maybe gender:team as an interactive term???
+
+##check assumption of generalized mixed effect model
+
+1.our subjects(emplyees) are independent 
+
+2.random effects come from a normal distrubution There is an assumption that random effects—both intercepts and slopes—are normally distributed.)
+
+```{r}
+qqnorm(curr_employee$employee_id)
+qqline(curr_employee$employee_id, col = "orange", lwd=2)
+```
+
+From the Quantile-Quantile plot above, the points follow closely around the qq-line in the middle and deviates from it at the two ends. Given this information, the variable "id" can be assumed to be normally distributed, hence matching the model assumption. 
+
+```{r}
+cleaned_data <- curr_employee
+cleaned_data <- cleaned_data%>%
+  mutate(team, team_num =case_when(
+    team == "Client services"~1,
+    team == "Data"~2,
+    team == "Design Legal and financial"~3,
+    team == "Marketing and sales"~4,
+    team == "Operations"~5,
+    team == "People and talent"~6,
+    team == "Software"~7  ))
+
+qqnorm(cleaned_data$team_num)
+qqline(cleaned_data$team_num, col = "orange", lwd=2)
+```
+
+3.the random effects errors and within-unit residual errors have constant variance(are variance of data(transformed by the link function) homogeneous across data)
+
+4.response is bianry
+If a logistic link function is appropriate, these plots should be linear, and the stronger the linear association, the more promising the predictor
+
+## initial model
+```{r}
+##centering parameter
+quantile(tidy_data$productivity)
+tidy_data$productivityC<-tidy_data$productivity-49
+```
+
+```{r}
+## 
+promotion_model1<-lme4::glmer(get_promotion~gender+leadership_for_level+productivityC+(1|employee_id), data=tidy_data, family = "binomial")
+summary(promotion_model1)
+```
+
+
+```{r}
+## with interaction term
+promotion_model2<-lme4::glmer(get_promotion~gender+leadership_for_level+productivityC+productivityC:gender+(1|employee_id),data = tidy_data,family = "binomial")
+lmtest::lrtest(promotion_model1,promotion_model2)
+```
+
+```{r}
+## with role seniority
+promotion_model3<-lme4::glmer(get_promotion ~gender+productivityC+leadership_for_level+productivityC:gender+(1|employee_id),data = tidy_data,family = "binomial")
+summary(promotion_model3)
+```
+
+```{r}
+#promotion_model4<-lme4::glmer(promotion_counts~gender+productivity+leadership_for_level+(1|employee_id),data = data3)
+#fixef(salary_mod)
+```
+
+### limitation
+cannot verify our some of our variables(productivity and leadership_for_level) are biased or not, since we do not know the source of rating
+## cannot tell whether leadership for level is biased specially for exceeds expectation/need improvement
+```{r}
+tidy_data%>%
+  ggplot()+
+  geom_bar(mapping = aes(x = leadership_for_level, fill = gender), position = "fill")+
+  scale_fill_manual(values = c("#fa8154", "#51c6b9")) +
+  theme_minimal()
+```
+
+
 
 ## Is the amount of salary determined based only on the talents and performance of the employees?
 
@@ -417,6 +609,10 @@ To determine whether *gender* plays a significant role in the determination of s
 ### Conclusions
 
 *discuss how lrt interacts with our figure of leadership_role by gender*
+From the visualizations and model above, the relationship between salary with covariates like productivity, leadership role, seniority role and gender shows that male employees tend to receive more benefits than females do. The visualization **Figure 6** and the proportion on average productivity exhibits unfairness between different genders. Between genders and leadership roles, some females think that salary still needs to be improved, while the male leaders think the opposite, that their benefits have already exceeded their expectations. Moreover, females who have the highest productivity but turn out have the lowest average salary, while the males have lower productivity resulting in a much higher average salary. The result from the linear mixed model we fitted, one with gender as a covariates and one without, the likelihood ratio test shows that gender does play a crucial role in salary. Holding other variables constant, female employees have 2022.17 dollars less than the average salary, while males have 679.10 dollars even more than the average.
+
+There is a slight discrepancy that our likelihood ratio test and 95% confidence interval give us different results. The likelihood ratio test says we should use the one with gender included, but 95% C.I. gives us the opposite as it is insignificant. Based on the evidence from previous proportion tables and visualizations, we tend to believe that there are still some differences when gender comes in, both in hiring processes and employees' benefits.
+
 
 
 ## Discussion
@@ -429,7 +625,13 @@ _In this section you will summarize your findings across all the research questi
 # Consultant information
 ## Consultant profiles
 
+<<<<<<< HEAD
 **Ke Deng**. Ke Deng is a junior analyst at the ProDasta Consulting Company, where she does report writing and data analysis for clients. She graduated from the University of Toronto with a Bachelor degree of Science, and is currently enrolled in the graduate program. Ke specializes in Statistics, with a focus in economics. She has been with the ProDasta Consulting Company since the company started. Ke is currently employed as the report writer and consulter of the company and she is great at writing and polishing reports for the clients.
+=======
+*This section is only marked for completeness, clarity and professionalism, not 'truth' so you can write it as if we're a few years in the future. Put your current degree in as completed and/or add your first choice grad school program, whatever you like. What skills related skills would you most like to highlight? What job title do you want?*
+
+**Ke Deng**. Ke Deng is a junior analyst at the ProDasta Consulting Company, where she does report writing and data analysis for clients. She graduated from the University of Toronto with a Bachelor degree of Science, and is currently enrolled in the graduate program. Ke specializes in Statistics, with a focus in economics. She has been with the ProDasta Consulting Company since the company started. Ke is currently employed as the report writer and consultant of the company and she is great at writing and polishing reports for the clients.
+>>>>>>> 65a6431503dc1738d0253faae49797516bcd54fc
 
 **Wenqing Hao**. Wenqing Hao is an experienced analyst at the ProDasta Consulting Company, also one of the four co-founders  of the Company. She holds a Bachelor degree of Science from the University of Toronto, focusing on both Statistics and Financial economics. She has a strong background of  managing business operations and finance projects. Over the past few years, she cooperates well and closely with the other three co-founders, generating a rather professional team to successfully satisfy clients’ various requests.    
 
