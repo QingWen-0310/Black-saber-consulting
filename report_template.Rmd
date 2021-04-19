@@ -206,7 +206,7 @@ gpa_median <- c(3.00, 3.00, 2.40)
 extra_median <- c(1.00, 1.00, 1.00)
 work_median <- c(1.00, 1.00, 1.00)
 
-sum_filtered_table <- data_frame(gen, num, gpa_median, extra_median, work_median)
+sum_filtered_table <- tibble(gen, num, gpa_median, extra_median, work_median)
 colnames(sum_filtered_table) <- c("Gender", "Number", "GPA", "Extracurricular", "Work experience")
 kable(sum_filtered_table, caption = "Table 3: Median statistics by gender")
 ```
@@ -287,7 +287,6 @@ As *Table 4* shows, the male has higher scores in *technical skills*, while the 
 In both Phase I and Phase II, we fit generalized linear models on different variables in each phase, and use likelihood ratio tests to find out whether gender plays an important role in passing rate. In phase I, we assess the impact of GPA, extracurricular activities and work experiences on passing status; for phase II, technical skills, writing skills, leadership presence and speaking skills are considered. Analyzing their odds ratios, these variables all have remarkable effects on whether candidates go to the next round smoothly. On the other hand, variable gender does not play a role here. The fitted models and the likelihood ratio tests tell us that gender does not have a noticeable impact on the final result, we tend to choose a simpler model that excludes the impact of gender here. Therefore, we do not think gender is a significant determinant of being a successful applicant in each hiring phase.
 
 
-
 ## Promotion process
 ##Does gender affect how many promotions an employee during its employment?
 
@@ -302,7 +301,7 @@ In both Phase I and Phase II, we fit generalized linear models on different vari
 Creating and checking the y-variable:
 ```{r, warning=FALSE}
 cleaned_data <- curr_employee
-cleaned_data <- cleaned_data%>%
+cleaned_data <- cleaned_data %>%
   mutate(role_seniority, role_num =case_when(
     role_seniority == "Entry-level"~1,
     role_seniority == "Junior I"~2,
@@ -336,15 +335,15 @@ table_promotion = table(cleaned_data$get_promotion)
 cleaned_data <- cleaned_data%>%
   filter(gender!="Prefer not to say")
 
-tidy_data <- slice(cleaned_data, 0)
-for (n in 2:6789){
-   if (cleaned_data$employee_id[n] == cleaned_data$employee_id[n-1]){
-       tidy_data[nrow(tidy_data)+1,]=list(cleaned_data$employee_id[n], cleaned_data$gender[n], cleaned_data$team[n], cleaned_data$financial_q[n],
-                       cleaned_data$role_seniority[n],cleaned_data$leadership_for_level[n],cleaned_data$productivity[n],cleaned_data$salary[n],
-                       cleaned_data$role_num[n],cleaned_data$get_promotion[n])
-   }
-}
-
+#tidy_data <- slice(cleaned_data, 0)
+#for (n in 2:6789){
+#   if (cleaned_data$employee_id[n] == cleaned_data$employee_id[n-1]){
+#       tidy_data[nrow(tidy_data)+1,]=list(cleaned_data$employee_id[n], cleaned_data$gender[n], cleaned_data$team[n], #cleaned_data$financial_q[n],
+#                       cleaned_data$role_seniority[n],cleaned_data$leadership_for_level[n],cleaned_data$productivity[n],cleaned_data$salary[n],
+#                       cleaned_data$role_num[n],cleaned_data$get_promotion[n])
+#   }
+#}
+tidy_data<-cleaned_data
 tidy_data<-tidy_data %>%
   mutate(role_seniority=fct_relevel(role_seniority,"Director",after = 7))
 ```
@@ -443,7 +442,7 @@ From the Quantile-Quantile plot above, the points follow closely around the qq-l
 
 ```{r}
 cleaned_data <- curr_employee
-cleaned_data <- cleaned_data%>%
+cleaned_data <- cleaned_data %>%
   mutate(team, team_num =case_when(
     team == "Client services"~1,
     team == "Data"~2,
@@ -532,7 +531,7 @@ gender <- c("Prefer not to say", "Man", "Woman")
 salary_mean <- c(46340, 48491, 45811)
 prod_mean <- c(45.47, 48.99, 50.44)
 
-sum_table <- data_frame(gender, prod_mean, salary_mean)
+sum_table <- tibble(gender, prod_mean, salary_mean)
 colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
 knitr::kable(sum_table, caption = "Mean productivity and mean salary by gender")
 ```
@@ -626,7 +625,6 @@ _In this section you will summarize your findings across all the research questi
 ## Consultant profiles
 
 **Ke Deng**. Ke Deng is a junior analyst at the ProDasta Consulting Company, where she does report writing and data analysis for clients. She graduated from the University of Toronto with a Bachelor degree of Science, and is currently enrolled in the graduate program. Ke specializes in Statistics, with a focus in economics. She has been with the ProDasta Consulting Company since the company started. Ke is currently employed as the report writer and consultant of the company and she is great at writing and polishing reports for the clients.
->>>>>>> 65a6431503dc1738d0253faae49797516bcd54fc
 
 **Wenqing Hao**. Wenqing Hao is an experienced analyst at the ProDasta Consulting Company, also one of the four co-founders  of the Company. She holds a Bachelor degree of Science from the University of Toronto, focusing on both Statistics and Financial economics. She has a strong background of  managing business operations and finance projects. Over the past few years, she cooperates well and closely with the other three co-founders, generating a rather professional team to successfully satisfy clients’ various requests.    
 
@@ -644,3 +642,25 @@ _In this section you will summarize your findings across all the research questi
 3. We support and welcome any statisticians in their professional field. We act with integrity and dignity toward the fellow statisticians, and provide opportunities for them to the professional field. 
 
 
+\newpage
+```{r}
+# This chunk provides an example of some things you can do with RMarkdown to make your report creation process easier
+
+# read in the data
+black_saber_current_employees <- read_csv("data/black-saber-current-employees.csv")
+
+# create a visualisation
+my_plot <- black_saber_current_employees %>% 
+  ggplot(aes(x = productivity)) +
+  geom_histogram(colour = "grey", fill = "#6C3082") +
+  theme_minimal() +
+  labs(title = "Look! A title. But do you want a title or a caption for your report?", x = "This is a changed x label")
+
+# save your plot in your images folder, you can specify the height and width, too
+# saving this means you can add the image to your exectuve summary without having to run or rerun the code, if you wish
+ggsave("images/example.png", width = 7, height = 4)
+
+# norice how the image is included with the ![](file/path.png) below
+```
+
+![](images/example.png)
