@@ -42,20 +42,58 @@ hire_final <- read_csv("data/final-hires-newgrad_2020.csv")
 
 \newpage
 # Executive summary
-The Black Saber Consulting Company is 
+### Background & Aim
+When a company hires or wants to benefit its employees, there are more than one factor to take into account, and making the decision is relatively complicated. However, gender should not be considered as a factor to raise salary of an employee, or to hire an employee because he is a male. The concern of potential bias in hiring and remuneration process has been raised from the Black Saber Consulting Company, and therefore the data has provided from their data team for the purpose of analyzing the three processes: hiring, promotion and salary, as the company board would like to confirm the fairness of the three processes. 
 
-* _No more than two pages_
-* _Language is appropriate for a non-technical audience_
-* _Bullet points are used where appropriate_
-*	_A small number of key visualizations and/or tables are included_
-*	_All three research questions are addressed_
+### Key findings
+The results of the study are summarized below:
+
+- those candidates who successfully passed Phase-I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say", which is a considerably fair percentage
+
+- In Phase-II of the hiring process, models suggested *gender* is not used as a predictor of hiring
+
+- In Phase-III, there are two candidates with the same score and of different genders. Even the female candidate has higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does, the male candidate is chosen by the HR instead of the female candidate.
+
+- Based on the evidence from built models and visualizations, we believe a model with the predictor *gender* gives better result and explanation, hence gender is considered as a variable when assigning salaries
+
+- Whether an employee gets a promotion depends on its productivity, leadership_for_level, and the gender. Gender makes a difference when considering the employee's leadership for level and 
+
+
+### Limitations
+
+- As the company does not make hiring decision manually, instead goes through an AI system, it is unknown how the system values each skills and whether takes gender into account or not
+
+- 
+
+-
+
+
+
+### Table
+Summary table 1: Conditional probability table for the three phases of hiring
+
+\begin{table}[]
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+Gender            & \multicolumn{2}{c|}{Phase 1} & \multicolumn{2}{c|}{Phase 2} & \multicolumn{2}{c|}{Phase 3} \\ \hline
+                  & Does not pass     & Pass     & Does not pass     & Pass     & Does not pass     & Pass     \\ \hline
+Man               & 0.467             & 0.483    & 0.468             & 0.682    & 0.583             & 0.800    \\ \hline
+Prefer not to say & 0.026             & 0.010    & 0.011             & 0.000    &                   &          \\ \hline
+Woman             & 0.508             & 0.507    & 0.522             & 0.318    & 0.417             & 0.200    \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+### Graph
+![](images/image1.png)
 
 
 \newpage
 # Technical report
 
 ## Introduction 
-As it is requested by the Black Saber Consulting Company due to the worry of potential biases existed within their employee's benefits and hiring process, 
+  As it is requested by the Black Saber Consulting Company due to the worry of potential biases existed within their employee's benefits and hiring process, 
 the following report will be analyzing the data given by Black Saber Consulting Company regarding their company potential biases within hiring and remuneration processes. The report includes an abstract, data exploration, data analysis, model building, executive summary, result and conclusions. The study is built upon five data sets from Black Saber Consulting Company of different phases: three hiring phases, the final hires, and the current employee information. The report is done through the software R-studio and JupyterHub. In the data explore section, the data shall be examined at first to check for correlations and potential variables to be used for data analysis and model building section. The statisticians choose the best fitted model and explain in the model building section. Finally the result section includes graphs and plots of the final evidence to answer the raised research question, which will be answered in the conclusion section. The report is confidential and will solely be used for the Black Saber Consulting Company only.
 
 
@@ -63,7 +101,7 @@ the following report will be analyzing the data given by Black Saber Consulting 
 
 - Is gender a significant determinant of being a successful applicant in each hiring phase?
 
-- Does gender affect how many promotions an employee during its employment?
+- Is gender one of the considerations when making the decision whether an employee should be promoted?
 
 - Is the amount of salary determined based only on the talents and performance of the employees?
 
@@ -71,7 +109,7 @@ the following report will be analyzing the data given by Black Saber Consulting 
 
 \newpage
 
-## Is gender a significant determinant of being a successful applicant in each hiring phase?
+# Is gender a significant determinant of being a successful applicant in each hiring phase?
 
 ### Data and exploratory analysis
 
@@ -81,7 +119,7 @@ the following report will be analyzing the data given by Black Saber Consulting 
 - *cv*: categorical, whether the applicant submitted a CV
 - *gpa*: numerical, applicant's GPA at school on scale of 4.0
 - *gender*, categorical, applicant's gender, including man, woman and prefer not to say
-- *extracurriculars*: number of extracurricular activities the applicant have
+- *extracurricular*: number of extracurricular activities the applicant have
 - *work_experience*: number of work experiences the applicant have
 
 ```{r}
@@ -281,7 +319,7 @@ colnames(hire2_temp) <- c("Applicant id", "Gender", "Technical skills", "Writing
 knitr::kable(hire2_temp, caption = "Table 4.Phase-II information for the two applicants with a tie in phase III")
 ```
 
-*Figure 2* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations and summarize the scores obtained by these two candidates in **Table X**. From the table, the female candidate have higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does. On the other hand, the male candidate has higher scores in *technical skills* than the female candidate does.
+*Figure 2* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations and summarize the scores obtained by these two candidates in **Table 4**. From the table, the female candidate have higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does. On the other hand, the male candidate has higher scores in *technical skills* than the female candidate does.
 
 ### Conclusions
 
@@ -290,8 +328,7 @@ As *Table 4* shows, the male has higher scores in *technical skills*, while the 
 In both Phase I and Phase II, we fit generalized linear models on different variables in each phase, and use likelihood ratio tests to find out whether gender plays an important role in passing rate. In phase I, we assess the impact of GPA, extracurricular activities and work experiences on passing status; for phase II, technical skills, writing skills, leadership presence and speaking skills are considered. Analyzing their odds ratios, these variables all have remarkable effects on whether candidates go to the next round smoothly. On the other hand, variable gender does not play a role here. The fitted models and the likelihood ratio tests tell us that gender does not have a noticeable impact on the final result, we tend to choose a simpler model that excludes the impact of gender here. Therefore, we do not think gender is a significant determinant of being a successful applicant in each hiring phase.
 
 
-## Promotion process
-##Does gender affect how many promotions an employee during its employment?
+# Is gender one of the considerations when making the decision whether an employee should be promoted?
 
 - *employee id*: numerical, records as each employee's identity number
 - *gender*, categorical, employee's gender, including man, woman and prefer not to say
@@ -343,7 +380,7 @@ cleaned_data <- cleaned_data%>%
   mutate(leadership_for_level= fct_relevel(leadership_for_level,"Needs improvement",after=0))
 ```
 
-## Data Wrangling
+### Data Wrangling
 In the original current employees data, we were given the information of all *current* employees in Black Saber Company for their whole employment duration. The data were collected from 2013 Q2 to 2020 Q4, and it contained basic information of employees such as *gender*, *team* and *employee_id*. Moreover, for each employee, there were multiple quarterly observations recording his/her *productivity*, *leadership_for_level*, *role_seniority* and  *salary*. 
 
 Before doing any data exploration, we made several changes to the given current employees data in order to better observe each employee's promotion situation. We created a new indicator variable named *get_promotion* (ie. if one get promotion in the following next quarter, then the indicator variable returns *1* for current quarter; otherwise, it returns *0*). In this way, it was necessary for us to delete each employee's the most recent quarter observation because they could not provide any relevant promotion information. The above manipulation made sense because the decision of promoting one or not supposed to rely on one's current quarter's performance. Also, we excluded the employees who filled in "Prefer not to say" for gender since here we were interested to investigate the effect of gender on getting promotion.
@@ -442,8 +479,8 @@ $\boldsymbol X$: model matrix for the fixed effects: *productivity*, *leadership
 $\boldsymbol \beta$: the effect of covariates on the mean outcome \
 $U_i$: random effect for specific employee\
 
-## Results
-## check assumption of generalized mixed effect model
+### Results
+### check assumption of generalized mixed effect model
 
 1.our subjects(employees) are independent 
 
@@ -474,7 +511,7 @@ qqline(cleaned_data$team_num, col = "orange", lwd=2)
 
 3.the random effects errors and within-unit residual errors have constant variance(are variance of data(transformed by the link function) homogeneous across data)
 
-4.response is bianry
+4.response is binary
 If a logistic link function is appropriate, these plots should be linear, and the stronger the linear association, the more promising the predictor
 
 ### Conclusions
@@ -483,8 +520,8 @@ If a logistic link function is appropriate, these plots should be linear, and th
 
 
 
-
-## Is the amount of salary determined based only on the talents and performance of the employees?
+\newpage
+# Is the amount of salary determined based only on the talents and performance of the employees?
 
 ### Data & exploratory analysis
 
@@ -556,7 +593,7 @@ salary_mod <- lmer(salary ~ productivity + leadership_for_level + gender + role_
 # lrtest(salary_mod_nog, salary_mod)
 ```
 
-**Table X**: Likelihood ratio test results for model with/without gender
+**Table 8**: Likelihood ratio test results for model with/without gender
 
 |   | #Df | Loglik | Df | Chisq | Pr(>Chisq) |
 |---|-----|--------|----|-------|------------|
@@ -588,18 +625,21 @@ To determine whether *gender* plays a significant role in the determination of s
 ### Conclusions
 
 *discuss how lrt interacts with our figure of leadership_role by gender*
+
 From the visualizations and model above, the relationship between salary with covariates like productivity, leadership role, seniority role and gender shows that male employees tend to receive more benefits than females do. The visualization **Figure 6** and the proportion on average productivity exhibits unfairness between different genders. Between genders and leadership roles, some females think that salary still needs to be improved, while the male leaders think the opposite, that their benefits have already exceeded their expectations. Moreover, females who have the highest productivity but turn out have the lowest average salary, while the males have lower productivity resulting in a much higher average salary. The result from the linear mixed model we fitted, one with gender as a covariates and one without, the likelihood ratio test shows that gender does play a crucial role in salary. Holding other variables constant, female employees have 2022.17 dollars less than the average salary, while males have 679.10 dollars even more than the average.
 
 There is a slight discrepancy that our likelihood ratio test and 95% confidence interval give us different results. The likelihood ratio test says we should use the one with gender included, but 95% C.I. gives us the opposite as it is insignificant. Based on the evidence from previous proportion tables and visualizations, we tend to believe that there are still some differences when gender comes in, both in hiring processes and employees' benefits.
 
 
-## Discussion
+# Discussion
 
 _In this section you will summarize your findings across all the research questions and discuss the strengths and limitations of your work. It doesn't have to be long, but keep in mind that often people will just skim the intro and the discussion of a document like this, so make sure it is useful as a semi-standalone section (doesn't have to be completely standalone like the executive summary)._
 
 
 
 ### Strengths and limitations
+
+
 
 \newpage
 # Consultant information
@@ -643,5 +683,3 @@ ggsave("images/example.png", width = 7, height = 4)
 
 # norice how the image is included with the ![](file/path.png) below
 ```
-
-![](images/example.png)
