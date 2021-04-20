@@ -40,18 +40,6 @@ hire_final <- read_csv("data/final-hires-newgrad_2020.csv")
 ```
 
 
-# General comments (you can delete this section)
-
-_You can delete this section, and if you want to check what it said, just open a template from the package again. You don't have to use this particular template, but you DO need to write you report in RMarkdown and include a cover page._
-
-_The cover page must have:_
-
-*	_A title and subtitle_
-* _"Report prepared for Black Saber Software by" your company name_
-*	_Date (assessment submission date is fine)_
-
-_You can change the colour of this cover to any colour you would like by replacing 6C3082 in the YAML above (line 11) to another hex code. You could use this tool to help you:_ https://htmlcolorcodes.com/color-picker/
-
 \newpage
 # Executive summary
 
@@ -316,10 +304,15 @@ In both Phase I and Phase II, we fit generalized linear models on different vari
 - *leadership_for_level*,categorical, quality of demonstrated leadership, taking into account of the role level of the employee
 - *productivity*, numerical, work output of the employee, productivies of 50 are considered as satisfactory, and above 50 indicates better than expected
 
-Creating and checking the y-variable:
-```{r, warning=FALSE}
+
+### Methods
+
+```{r}
 cleaned_data <- curr_employee
-cleaned_data <- cleaned_data %>%
+#cleaned_data <- cleaned_data%>%
+#  group_by(employee_id) %>%
+#  count()
+cleaned_data <- cleaned_data%>%
   mutate(role_seniority, role_num =case_when(
     role_seniority == "Entry-level"~1,
     role_seniority == "Junior I"~2,
@@ -348,108 +341,116 @@ for (n in 1:6905){
 }
 cleaned_data$get_promotion = get_promoted
 
-table_promotion = table(cleaned_data$get_promotion)
-
 cleaned_data <- cleaned_data%>%
-  filter(gender!="Prefer not to say")
+  filter(gender!="Prefer not to say") %>%
+  mutate(leadership_for_level= fct_relevel(leadership_for_level,"Needs improvement",after=0))
+```
 
-#tidy_data <- slice(cleaned_data, 0)
-#for (n in 2:6789){
-#   if (cleaned_data$employee_id[n] == cleaned_data$employee_id[n-1]){
-#       tidy_data[nrow(tidy_data)+1,]=list(cleaned_data$employee_id[n], cleaned_data$gender[n], cleaned_data$team[n], #cleaned_data$financial_q[n],
-#                       cleaned_data$role_seniority[n],cleaned_data$leadership_for_level[n],cleaned_data$productivity[n],cleaned_data$salary[n],
-#                       cleaned_data$role_num[n],cleaned_data$get_promotion[n])
-#   }
-#}
-tidy_data<-cleaned_data
+## Data Wrangling
+In the original current employees data, we were given the information of all *current* employees in Black Saber Company for their whole employment duration. The data were collected from 2013 Q2 to 2020 Q4, and it contained basic information of employees such as *gender*, *team* and *employee_id*. Moreover, for each employee, there were multiple quarterly observations recording his/her *productivity*, *leadership_for_level*, *role_seniority* and  *salary*. 
+
+Before doing any data exploration, we made several changes to the given current employees data in order to better observe each employee's promotion situation. We created a new indicator variable named *get_promotion* (ie. if one get promotion in the following next quarter, then the indicator variable returns *1* for current quarter; otherwise, it returns *0*). In this way, it was necessary for us to delete each employee's the most recent quarter observation because they could not provide any relevant promotion information. The above manipulation made sense because the decision of promoting one or not supposed to rely on one's current quarter's performance. Also, we excluded the employees who filled in "Prefer not to say" for gender since here we were interested to investigate the effect of gender on getting promotion.
+
+
+```{r}
+##wrangle tidy data for modeling(answering question 2 and 3)
+tidy_data <- slice(cleaned_data, 0)
+for (n in 2:6789){
+   if (cleaned_data$employee_id[n] == cleaned_data$employee_id[n-1]){
+       tidy_data[nrow(tidy_data)+1,]=list(cleaned_data$employee_id[n], cleaned_data$gender[n], cleaned_data$team[n], cleaned_data$financial_q[n],
+                       cleaned_data$role_seniority[n],cleaned_data$leadership_for_level[n],cleaned_data$productivity[n],cleaned_data$salary[n],
+                       cleaned_data$role_num[n],cleaned_data$get_promotion[n])
+   }
+}
 tidy_data<-tidy_data %>%
   mutate(role_seniority=fct_relevel(role_seniority,"Director",after = 7))
+
 ```
 
-
-### Methods
-
-## explore data
-```{r}
-tidy_data %>% 
-  ggplot(aes(x = productivity,y=leadership_for_level, color = gender)) +
-  geom_point() +
-  theme_minimal() +
-  facet_wrap(~role_seniority)
-```
+We filtered and focused on the observations only where employees got promotion and received "Appropriate for level" as feedback of *leadership_for_level*.Then, we further grouped them by *gender* and *role_seniority*, and calculated the average productivity for each group. Visually, from the following boxplot *Figure 3*, we could see that female had a relatively higher mean productivity than males did in almost every role level promotion stage. Here, we could interprete such average productivity as the potential productivity threshold of promotion requirement. That was saying under the circumstance where males and females all received the same rating of *leadership_for_level* , females were often required to have a relatively higher average productivity than males did in almost every role level promotion stage. 
 
 ```{r}
-## focus on observations only where employees are getting promoted
-data_promotion<-tidy_data%>%
-  filter(get_promotion==1)
-
-data_promotion %>% 
-  ggplot(aes(x = productivity,y=leadership_for_level, color = gender)) +
-  geom_point() +
-  theme_minimal() +
-  facet_wrap(~role_seniority)
-```
-observation: for those getting promoted, only males receive the feedback of leadership as "exceeds expectation" and almost no one(except one female at junior II) receive feedback of "needs improvement" can get promotion.So here might be one potential outlier.
-
-2. Summaries of the categorical variables
-```{r}
-#unique(tidy_data$role_seniority)
-#unique(tidy_data$team)
-#unique(tidy_data$employee_id)
-```
-there are nine levels, eight teams and 579 employees(already excluding people who filled in "prefer not to say" ) 
-
-
-```{r}
-## get an approximate threshold of promoting productivity requirement seperately for each gender and also different role level
-data1<-tidy_data%>%
-  filter(get_promotion==1)%>%
-  group_by(role_seniority,gender,leadership_for_level)%>%
-  summarise(avg_productivity=mean(productivity),counts=n())
-data1
-```
-
-```{r}
-data1 %>% 
-  ggplot(aes(x = avg_productivity,y=leadership_for_level, color = gender)) +
-  geom_point() +
-  theme_minimal() +
-  facet_wrap(~role_seniority)
-```
-observation: for appropriate for level, we found that females have a relatively higher average productivity than males did in almost every role level promotion stage.Perhaps it is the indication od existence of interaction between gender and productivity!
-
-```{r}
-## vidualization
+## visualization
 data2 <- tidy_data %>%
   filter(get_promotion == 1)%>%
   filter(leadership_for_level=="Appropriate for level")
 
-data2%>%
-  ggplot( mapping = aes(x = role_seniority, y = productivity,colour=gender)) + 
+bp <- data2%>%
+  ggplot( mapping = aes(x = role_seniority, y = productivity,fill=gender)) + 
   geom_boxplot()
+
+bp +  scale_fill_manual(values = c("#fa8154", "#51c6b9")) 
 ```
 
-```{r}
+Next,through a even more detailed devision, we grouped observations by *gender*, *role_seniority* and also *team*. In *figure 4*, it can be seen that in many departments such as Data, Marketing and Operations, almost at every  *role_seniority*, females often pocessed with a considerably higher productivity,further illustrating our previous discovery. Additionally, we noticed that in design department and director level in many departments, there were only males getting promotions. The above data exploration make us concern about whether the promotion decision is made purely on employees' performance, or *gender* had became one of considerations during promotion decision. Hence, we continued investigating through finding a proper modeling.
+
+```{r,warning=FALSE}
 ##explore team
 data3 <- tidy_data %>%
   filter(get_promotion == 1,leadership_for_level=="Appropriate for level")%>%
-  group_by(team,role_seniority,gender,leadership_for_level)%>%
+  group_by(team,role_seniority,gender)%>%
   summarise(avg_productivity=mean(productivity),counts=n())
-```
-```{r}
-data3 %>% 
+sp <- data3 %>% 
   ggplot(aes(x = avg_productivity,y=role_seniority, color = gender)) +
   geom_point() +
   theme_minimal() +
   facet_wrap(~team)
+
+sp +  scale_color_manual(values = c("#fa8154", "#51c6b9"))
 ```
-observation: maybe gender:team as an interactive term???
 
-##check assumption of generalized mixed effect model
 
-1.our subjects(emplyees) are independent 
+```{r}
+##centering parameter
+center <- quantile(tidy_data$productivity)
+tidy_data$productivityC<-tidy_data$productivity-49
 
-2.random effects come from a normal distrubution There is an assumption that random effects—both intercepts and slopes—are normally distributed.)
+```
+
+```{r}
+##without gender,leadership_for_level
+promotion_model1<-lme4::glmer(get_promotion~productivityC+(1|employee_id), data=tidy_data, family = "binomial")
+#summary(promotion_model1)
+```
+
+```{r}
+##without gender
+promotion_model2<-lme4::glmer(get_promotion~leadership_for_level+productivityC+(1|employee_id), data=tidy_data, family = "binomial")
+#lmtest::lrtest(promotion_model1,promotion_model2)
+```
+
+
+```{r}
+## with gender
+promotion_model3<-lme4::glmer(get_promotion~gender+leadership_for_level+productivityC+(1|employee_id),data = tidy_data,family = "binomial")
+#summary(promotion_model3)
+#lmtest::lrtest(promotion_model2,promotion_model3)
+```
+
+**Table 5**: Likelihood ratio test results for model with/without gender
+
+|   | #Df | Loglik | Df | Chisq | Pr(>Chisq) |
+|---|-----|--------|----|-------|------------|
+| 1 | 5   | -1405.2|    |       |            |
+| 2 | 6   | -1402.5| 1  | 5.205 | 0.02253    |
+
+
+Since we were considering a binary response variable(*get_promotion*) and also having repeated quarterly measurements of each employees, we chose to use the logisric mixed effect linear model. In detailed, we considered  *productivity* and *leadership role* as our fixed effects since they are measures of employees' value to the firm. Furthermore, we are interested in comparing which one of these two factor will have a larger impact. More importantly, we want to investigate whether *gender*  is one of the consideration within one's promotion decision.
+
+Thus, the proper model should be the following: $$log(\frac{\mu_{ij}}{1-\mu_{ij}) = \boldsymbol X_{ij} \boldsymbol \beta + \U_i$$. 
+
+$\mu_{ij}$ and pij is the true probability that the employee i will get promotion in jth recorded quartely measurement\
+$Y_{ij}$: binary response variable,indicating whether employee i got promoted or nor at jth repeated measurement \
+$\boldsymbol X$: model matrix for the fixed effects: *productivity*, *leadership role* and *gender* \
+$\boldsymbol \beta$: the effect of covariates on the mean outcome \
+$\U_i$: random effect for specific employee\
+
+## Results
+## check assumption of generalized mixed effect model
+
+1.our subjects(employees) are independent 
+
+2.random effects come from a normal distribution There is an assumption that random effects—both intercepts and slopes—are normally distributed.)
 
 ```{r}
 qqnorm(curr_employee$employee_id)
@@ -460,7 +461,7 @@ From the Quantile-Quantile plot above, the points follow closely around the qq-l
 
 ```{r}
 cleaned_data <- curr_employee
-cleaned_data <- cleaned_data %>%
+cleaned_data <- cleaned_data%>%
   mutate(team, team_num =case_when(
     team == "Client services"~1,
     team == "Data"~2,
@@ -479,47 +480,11 @@ qqline(cleaned_data$team_num, col = "orange", lwd=2)
 4.response is bianry
 If a logistic link function is appropriate, these plots should be linear, and the stronger the linear association, the more promising the predictor
 
-## initial model
-```{r}
-##centering parameter
-quantile(tidy_data$productivity)
-tidy_data$productivityC<-tidy_data$productivity-49
-```
-
-```{r}
-## 
-promotion_model1<-lme4::glmer(get_promotion~gender+leadership_for_level+productivityC+(1|employee_id), data=tidy_data, family = "binomial")
-summary(promotion_model1)
-```
+### Conclusions
 
 
-```{r}
-## with interaction term
-promotion_model2<-lme4::glmer(get_promotion~gender+leadership_for_level+productivityC+productivityC:gender+(1|employee_id),data = tidy_data,family = "binomial")
-lmtest::lrtest(promotion_model1,promotion_model2)
-```
 
-```{r}
-## with role seniority
-promotion_model3<-lme4::glmer(get_promotion ~gender+productivityC+leadership_for_level+productivityC:gender+(1|employee_id),data = tidy_data,family = "binomial")
-summary(promotion_model3)
-```
 
-```{r}
-#promotion_model4<-lme4::glmer(promotion_counts~gender+productivity+leadership_for_level+(1|employee_id),data = data3)
-#fixef(salary_mod)
-```
-
-### limitation
-cannot verify our some of our variables(productivity and leadership_for_level) are biased or not, since we do not know the source of rating
-## cannot tell whether leadership for level is biased specially for exceeds expectation/need improvement
-```{r}
-tidy_data%>%
-  ggplot()+
-  geom_bar(mapping = aes(x = leadership_for_level, fill = gender), position = "fill")+
-  scale_fill_manual(values = c("#fa8154", "#51c6b9")) +
-  theme_minimal()
-```
 
 
 ## Is the amount of salary determined based only on the talents and performance of the employees?
