@@ -12,7 +12,7 @@ output:
     toc_depth: '2'
     df_print: paged
 lang: en
-subtitle: hiring process and employees' benefits
+subtitle: potential bias in hiring and remuneration processes
 titlepage: yes
 titlepage-color: 51c6b9
 titlepage-text-color: FFFFFF
@@ -42,8 +42,7 @@ hire_final <- read_csv("data/final-hires-newgrad_2020.csv")
 
 \newpage
 # Executive summary
-
-_Guidelines for the executive summary:_
+The Black Saber Consulting Company is 
 
 * _No more than two pages_
 * _Language is appropriate for a non-technical audience_
@@ -56,8 +55,6 @@ _Guidelines for the executive summary:_
 # Technical report
 
 ## Introduction 
-#what the report will cover
-#setting scope and expectations
 As it is requested by the Black Saber Consulting Company due to the worry of potential biases existed within their employee's benefits and hiring process, 
 the following report will be analyzing the data given by Black Saber Consulting Company regarding their company potential biases within hiring and remuneration processes. The report includes an abstract, data exploration, data analysis, model building, executive summary, result and conclusions. The study is built upon five data sets from Black Saber Consulting Company of different phases: three hiring phases, the final hires, and the current employee information. The report is done through the software R-studio and JupyterHub. In the data explore section, the data shall be examined at first to check for correlations and potential variables to be used for data analysis and model building section. The statisticians choose the best fitted model and explain in the model building section. Finally the result section includes graphs and plots of the final evidence to answer the raised research question, which will be answered in the conclusion section. The report is confidential and will solely be used for the Black Saber Consulting Company only.
 
@@ -382,7 +379,7 @@ bp <- data2%>%
 bp +  scale_fill_manual(values = c("#fa8154", "#51c6b9")) 
 ```
 
-Next,through a even more detailed devision, we grouped observations by *gender*, *role_seniority* and also *team*. In *figure 4*, it can be seen that in many departments such as Data, Marketing and Operations, almost at every  *role_seniority*, females often pocessed with a considerably higher productivity,further illustrating our previous discovery. Additionally, we noticed that in design department and director level in many departments, there were only males getting promotions. The above data exploration make us concern about whether the promotion decision is made purely on employees' performance, or *gender* had became one of considerations during promotion decision. Hence, we continued investigating through finding a proper modeling.
+Next,through a even more detailed division, we grouped observations by *gender*, *role_seniority* and also *team*. In *figure 4*, it can be seen that in many departments such as Data, Marketing and Operations, almost at every  *role_seniority*, females often processed with a considerably higher productivity,further illustrating our previous discovery. Additionally, we noticed that in design department and director level in many departments, there were only males getting promotions. The above data exploration make us concern about whether the promotion decision is made purely on employees' performance, or *gender* had became one of considerations during promotion decision. Hence, we continued investigating through finding a proper modeling.
 
 ```{r,warning=FALSE}
 ##explore team
@@ -437,13 +434,13 @@ promotion_model3<-lme4::glmer(get_promotion~gender+leadership_for_level+producti
 
 Since we were considering a binary response variable(*get_promotion*) and also having repeated quarterly measurements of each employees, we chose to use the logisric mixed effect linear model. In detailed, we considered  *productivity* and *leadership role* as our fixed effects since they are measures of employees' value to the firm. Furthermore, we are interested in comparing which one of these two factor will have a larger impact. More importantly, we want to investigate whether *gender*  is one of the consideration within one's promotion decision.
 
-Thus, the proper model should be the following: $$log(\frac{\mu_{ij}}{1-\mu_{ij}) = \boldsymbol X_{ij} \boldsymbol \beta + \U_i$$. 
+Thus, the proper model should be the following: $$log(\frac{\mu_{ij}}{1-\mu_{ij}}) = \boldsymbol X_{ij}  \boldsymbol \beta + U_i$$. 
 
 $\mu_{ij}$ and pij is the true probability that the employee i will get promotion in jth recorded quartely measurement\
 $Y_{ij}$: binary response variable,indicating whether employee i got promoted or nor at jth repeated measurement \
 $\boldsymbol X$: model matrix for the fixed effects: *productivity*, *leadership role* and *gender* \
 $\boldsymbol \beta$: the effect of covariates on the mean outcome \
-$\U_i$: random effect for specific employee\
+$U_i$: random effect for specific employee\
 
 ## Results
 ## check assumption of generalized mixed effect model
@@ -599,6 +596,8 @@ There is a slight discrepancy that our likelihood ratio test and 95% confidence 
 ## Discussion
 
 _In this section you will summarize your findings across all the research questions and discuss the strengths and limitations of your work. It doesn't have to be long, but keep in mind that often people will just skim the intro and the discussion of a document like this, so make sure it is useful as a semi-standalone section (doesn't have to be completely standalone like the executive summary)._
+
+
 
 ### Strengths and limitations
 
