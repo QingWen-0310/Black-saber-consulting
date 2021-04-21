@@ -63,30 +63,18 @@ The results of the study are summarized below:
 
 - As the company does not make hiring decision manually, instead goes through an AI system, it is unknown how the system values each skills and whether takes gender into account or not
 
-- 
-
--
-
+- Several data has to be removed in the promotion model, as an employee's newest employment statements do not show whether he or she gets promoted in the next potential working employment period
 
 
 ### Table
 
 Summary table 1: Conditional probability table for the three phases of hiring
 
-
-\begin{tabular}{|c|c|c|c|c|c|c|}
-\hline
-Gender            & \multicolumn{2}{c|}{Phase 1} & \multicolumn{2}{c|}{Phase 2} & \multicolumn{2}{c|}{Phase 3} \\ \hline
-                  & Does not pass     & Pass     & Does not pass     & Pass     & Does not pass     & Pass     \\ \hline
-Man               & 0.467             & 0.483    & 0.468             & 0.682    & 0.583             & 0.800    \\ \hline
-Prefer not to say & 0.026             & 0.010    & 0.011             & 0.000    &  0.000                 &   0.000       \\ \hline
-Woman             & 0.508             & 0.507    & 0.522             & 0.318    & 0.417             & 0.200    \\ \hline
-\end{tabular}
-
-
+  ![](images/image2.png)
 
 
 ### Graph
+Summary Graph 1: histogram for salary distribution by gender and leadership
 
 ![](images/image1.png)
 
@@ -111,16 +99,16 @@ the following report will be analyzing the data given by Black Saber Consulting 
 
 \newpage
 
-# Is gender a significant determinant of being a successful applicant in each hiring phase?
+## Is gender a significant determinant of being a successful applicant in each hiring phase?
 
 ### Data and exploratory analysis
 
-- *cover letter*: categorical, whether the applicant submitted a cover letter
+- *cover_letter*: categorical, whether the applicant submitted a cover letter
 - *cv*: categorical, whether the applicant submitted a CV
 - *gpa*: numerical, applicant's GPA at school on scale of 4.0
 - *gender*, categorical, applicant's gender, including man, woman and prefer not to say
 - *extracurricular*: number of extracurricular activities the applicant have
-- *work experience*: number of work experiences the applicant have
+- *work_experience*: number of work experiences the applicant have
 
 ```{r}
 # add indicator variables of whether the applicant passed phase-I
@@ -141,16 +129,20 @@ hire_phase3 <- hire_phase3 %>%
 
 Table 1: Conditional probability table for the three phases of hiring
 
-\begin{table}[]
-\begin{tabular}{|c|c|c|c|c|c|c|}
-\hline
-Gender            & \multicolumn{2}{c|}{Phase 1} & \multicolumn{2}{c|}{Phase 2} & \multicolumn{2}{c|}{Phase 3} \\ \hline
-                  & Does not pass     & Pass     & Does not pass     & Pass     & Does not pass     & Pass     \\ \hline
-Man               & 0.467             & 0.483    & 0.468             & 0.682    & 0.583             & 0.800    \\ \hline
-Prefer not to say & 0.026             & 0.010    & 0.011             & 0.000    &   0.000             &  0.000        \\ \hline
-Woman             & 0.508             & 0.507    & 0.522             & 0.318    & 0.417             & 0.200    \\ \hline
-\end{tabular}
-\end{table}
+```{r}
+#\begin{table}[]
+#\begin{tabular}{|c|c|c|c|c|c|c|}
+#\hline
+#Gender            & \multicolumn{2}{c|}{Phase 1} & \multicolumn{2}{c|}{Phase 2} & \multicolumn{2}{c|}{Phase 3} \\ \hline
+#                 & Does not pass     & Pass     & Does not pass     & Pass     & Does not pass     & Pass     \\ \hline
+#Man               & 0.467             & 0.483    & 0.468             & 0.682    & 0.583             & 0.800    \\ \hline
+#Prefer not to say & 0.026             & 0.010    & 0.011             & 0.000    &                   &          \\ \hline
+#Woman             & 0.508             & 0.507    & 0.522             & 0.318    & 0.417             & 0.200    \\ \hline
+#\end{tabular}
+#\end{table}
+```
+
+![](images/image2.png)
 
 ```{r, fig.cap="Proportion of people passed phase I by gender and cv"}
 hire_phase1_temp <- hire_phase1 %>% 
@@ -208,7 +200,7 @@ $\beta_i$: coefficient for each variable
 
 Finally, in phase-III of the hiring, the candidates have two interviews with two interviewers. The HR team will then decide which candidates to hire based on the interview scores. Due to a limited number of observations in the final phase, and a relatively small number of variables, we decide to use summary tables and visualizations to draw on conclusions.
 
-### Results in each hiring phase
+### Results
 
 #### Phase-I
 
@@ -220,7 +212,8 @@ hire_phase1_filtered <- hire_phase1 %>%
   filter(extracurriculars > 0)
 ```
 
-Table 2: Proportion of candidates passing Phase-I by gender with filtered observations
+
+Table 2: Proportion of candidates passing Phase-I by gender with filtered observations```
 
 |                   | Does not pass | Pass |
 |-------------------|---------------|------|
@@ -229,6 +222,7 @@ Table 2: Proportion of candidates passing Phase-I by gender with filtered observ
 | Woman             | 0.46          | 0.51 |
 
 
+Table 3: Median statistics by gender
 ```{r}
 # filter data based on different gender
 h1f_male <- hire_phase1_filtered %>% 
@@ -237,8 +231,7 @@ h1f_female <- hire_phase1_filtered %>%
   filter(gender == "Woman")
 h1f_pns <- hire_phase1_filtered %>% 
   filter(gender == "Prefer not to say")
-
-summary(h1f_pns)
+#summary(h1f_pns)
 
 # summarize a table for display
 gen <- c("Man", "Woman", "Prefer not to say")
@@ -249,16 +242,17 @@ work_median <- c(1.00, 1.00, 1.00)
 
 sum_filtered_table <- tibble(gen, num, gpa_median, extra_median, work_median)
 colnames(sum_filtered_table) <- c("Gender", "Number", "GPA", "Extracurricular", "Work experience")
-kable(sum_filtered_table, caption = "Median statistics by gender")
+kable(sum_filtered_table)
 ```
 
-From *Table 2*, we see that among those candidates who successfully passed Phase-I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say". Hence, from the table summary, it seems that the Phase-I hiring is pretty fair across genders as the differences across the proportions are small.
+From *Table 2*, we see that among those candidates who successfully passed Phase-I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say". Hence, from the table summary, it seems that the Phase-I hiring is pretty fair across genders. 
 
 *Table 3* displays the median statistics for *GPA*, number of *Extracurricular*, and the number of *Work experience* the candidates have by gender. There is a relatively even split between the number of *male* and *female* candidates, while *prefer not to say* only has 4 candidates. Despite this, the median values for each of the variables seem to be pretty consistent across different genders. The only discrepancy appears to be *prefer not to say* having a lower *GPA* than the other two genders, potentially due to the small number of observations. 
 
 
 #### Phase-II
 
+Table 4. Hiring Phase-II summary output
 ```{r}
 # build model
 hire2_mod <- glm(pass~technical_skills + writing_skills + leadership_presence + speaking_skills, family = binomial(), data = hire_phase2)
@@ -278,7 +272,7 @@ hire2_colnames <- c("Estimates", "95% CI", "P-value")
 hire2_mod_table <- cbind(ests_h2, cis_h2, pval_h2)
 rownames(hire2_mod_table) <- hire2_rownames
 colnames(hire2_mod_table) <- hire2_colnames
-knitr::kable(hire2_mod_table, align = c("r", "r"), caption = "Hiring phase-II summary output")
+knitr::kable(hire2_mod_table, align = c("r", "r"))
 ```
 
 From *Table 4*, we see that the effect of all four predictors are significantly positive, with the odds ratio for *technical skills*, *writing skills*, *leadership presence*, and *speaking skills* being 1.08, 1.09, 2.53, and 2.01. The p-values for the 4 predictors are all significant. Taking the odds ratio of *technical skills* as an example, it means that with a 1 unit increase in *technical skills*, the odds of being a successful candidate in phase-II is 1.08 times higher, holding other variables constant. 
@@ -307,6 +301,7 @@ hire_2_3 %>%
 ```
 
 
+Table 5. Phase-II information for the two applicants with a tie in phase III
 ```{r}
 # table for the two candidates with a tie in interview total score
 hire2_temp <- hire_phase2 %>% 
@@ -314,26 +309,26 @@ hire2_temp <- hire_phase2 %>%
   select(applicant_id, gender, technical_skills, writing_skills, leadership_presence, speaking_skills)
 colnames(hire2_temp) <- c("Applicant id", "Gender", "Technical skills", "Writing skills", "Leadership presence", "Speaking skills")
 
-knitr::kable(hire2_temp, caption = "Phase-II information for the two applicants with a tie in phase III")
+knitr::kable(hire2_temp)
 ```
 
-*Figure 4* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations and summarize the scores obtained by these two candidates in *Table 4*. From the table, the female candidate have higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does. On the other hand, the male candidate has higher scores in *technical skills* than the female candidate does.
+*Figure 4* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations and summarize the scores obtained by these two candidates in *Table 5*. From the table, the female candidate have higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does. On the other hand, the male candidate has higher scores in *technical skills* than the female candidate does.
 
-### Conclusions on potential gender bias in hiring phases.
+### Conclusions
 
-As *Table 4* shows, the male has higher scores in *technical skills*, while the female is better at categories like *writing skills*, *leadership presence*, and *speaking skills*. According to our phase-II model, *leadership presence* and *speaking skills* seems to have larger effect on the odds ratio than the other two determinants do. So, we would expect the female to be selected as a successful candidate instead of the male. 
+As *Table 5* shows, the male has higher scores in *technical skills*, while the female is better at categories like *writing skills*, *leadership presence*, and *speaking skills*. According to our phase-II model, *leadership presence* and *speaking skills* seems to have larger effect on the odds ratio than the other two determinants do. So, we would expect the female to be selected as a successful candidate instead of the male. 
 
 In both Phase I and Phase II, we fit generalized linear models on different variables in each phase, and use likelihood ratio tests to find out whether gender plays an important role in passing rate. In phase I, we assess the impact of GPA, extracurricular activities and work experiences on passing status; for phase II, technical skills, writing skills, leadership presence and speaking skills are considered. Analyzing their odds ratios, these variables all have remarkable effects on whether candidates go to the next round smoothly. On the other hand, variable gender does not play a role here. The fitted models and the likelihood ratio tests tell us that gender does not have a noticeable impact on the final result, we tend to choose a simpler model that excludes the impact of gender here. Therefore, we do not think gender is a significant determinant of being a successful applicant in each hiring phase.
 
-# Is gender one of the considerations when making the decision whether an employee should be promoted?
+## Is gender one of the considerations when making the decision whether an employee should be promoted?
 
 - *employee id*: numerical, records as each employee's identity number
 - *gender*, categorical, employee's gender, including man, woman and prefer not to say
 - *team*, categorical, employee's team, including Client services, Data, Design Legal and financial, Marketing and sales, Operations, People and talent, and Software
-- *financial_q*, categorical, the working period of the employee
-- *role_seniority*, categorical, the employee's job position at the company
-- *leadership_for_level*,categorical, quality of demonstrated leadership, taking into account of the role level of the employee
-- *productivity*, numerical, work output of the employee, productivies of 50 are considered as satisfactory, and above 50 indicates better than expected
+- *financial q*, categorical, the working period of the employee
+- *role seniority*, categorical, the employee's job position at the company
+- *leadership for level*,categorical, quality of demonstrated leadership, taking into account of the role level of the employee
+- *productivity*, numerical, work output of the employee, productivity of 50 are considered as satisfactory, and above 50 indicates better than expected
 
 
 ### Methods
@@ -400,7 +395,7 @@ tidy_data<-tidy_data %>%
 
 We filtered and focused on the observations only where employees got promotion and received "Appropriate for level" as feedback of *leadership_for_level*.Then, we further grouped them by *gender* and *role_seniority*, and calculated the average productivity for each group. Visually, from the following boxplot *Figure 3*, we could see that female had a relatively higher mean productivity than males did in almost every role level promotion stage. Here, we could interprete such average productivity as the potential productivity threshold of promotion requirement. That was saying under the circumstance where males and females all received the same rating of *leadership_for_level* , females were often required to have a relatively higher average productivity than males did in almost every role level promotion stage. 
 
-```{r}
+```{r,fig.cap="Boxplot for productivity and role seniority"}
 ## visualization
 data2 <- tidy_data %>%
   filter(get_promotion == 1)%>%
@@ -408,14 +403,15 @@ data2 <- tidy_data %>%
 
 bp <- data2%>%
   ggplot( mapping = aes(x = role_seniority, y = productivity,fill=gender)) + 
-  geom_boxplot()
+  geom_boxplot()+
+  theme_minimal()
 
 bp +  scale_fill_manual(values = c("#fa8154", "#51c6b9")) 
 ```
 
 Next,through a even more detailed division, we grouped observations by *gender*, *role_seniority* and also *team*. In *figure 4*, it can be seen that in many departments such as Data, Marketing and Operations, almost at every  *role_seniority*, females often processed with a considerably higher productivity,further illustrating our previous discovery. Additionally, we noticed that in design department and director level in many departments, there were only males getting promotions. The above data exploration make us concern about whether the promotion decision is made purely on employees' performance, or *gender* had became one of considerations during promotion decision. Hence, we continued investigating through finding a proper modeling.
 
-```{r,warning=FALSE}
+```{r,fig.cap="Plots of role seniority and average productivity"}
 ##explore team
 data3 <- tidy_data %>%
   filter(get_promotion == 1,leadership_for_level=="Appropriate for level")%>%
@@ -458,7 +454,7 @@ promotion_model3<-lme4::glmer(get_promotion~gender+leadership_for_level+producti
 #lmtest::lrtest(promotion_model2,promotion_model3)
 ```
 
-**Table 5**: Likelihood ratio test results for model with/without gender
+**Table 6**: Likelihood ratio test results for model with/without gender
 
 |   | #Df | Loglik | Df | Chisq | Pr(>Chisq) |
 |---|-----|--------|----|-------|------------|
@@ -479,32 +475,9 @@ $U_i$: random effect for specific employee\
 ### Results
 ### check assumption of generalized mixed effect model
 
-1.our subjects(employees) are independent 
+1.Our subjects(employees) are independent 
 
-2.random effects come from a normal distribution There is an assumption that random effects—both intercepts and slopes—are normally distributed.)
-
-```{r}
-qqnorm(curr_employee$employee_id)
-qqline(curr_employee$employee_id, col = "orange", lwd=2)
-```
-
-From the Quantile-Quantile plot above, the points follow closely around the qq-line in the middle and deviates from it at the two ends. Given this information, the variable "id" can be assumed to be normally distributed, hence matching the model assumption. 
-
-```{r}
-cleaned_data <- curr_employee
-cleaned_data <- cleaned_data%>%
-  mutate(team, team_num =case_when(
-    team == "Client services"~1,
-    team == "Data"~2,
-    team == "Design Legal and financial"~3,
-    team == "Marketing and sales"~4,
-    team == "Operations"~5,
-    team == "People and talent"~6,
-    team == "Software"~7  ))
-
-qqnorm(cleaned_data$team_num)
-qqline(cleaned_data$team_num, col = "orange", lwd=2)
-```
+2.Random effects come from a normal distribution There is an assumption that random effects—both intercepts and slopes—are normally distributed.
 
 3.the random effects errors and within-unit residual errors have constant variance(are variance of data(transformed by the link function) homogeneous across data)
 
@@ -518,13 +491,14 @@ If a logistic link function is appropriate, these plots should be linear, and th
 
 
 \newpage
-
-# Is the amount of salary determined based only on the talents and performance of the employees?
+## Is the amount of salary determined based only on the talents and performance of the employees?
 
 ### Data & exploratory analysis
 
 We reformatted the values of *salary* in the original data set by taking off the "$" and "," and change the values from character values to numeric values for latter analysis. In addition to this, we re-level some factors for better display and ease of understanding. For instance, we re-level the factor of *seniority role* to reflect the ordering of the job title, from the least to the most senior.
 
+
+Table 7. Mean productivity and mean salary by gender
 ```{r}
 # salary distribution filled by gender
 curr_1 <- curr_employee %>% 
@@ -546,7 +520,7 @@ prod_mean <- c(45.47, 48.99, 50.44)
 
 sum_table <- tibble(gender, prod_mean, salary_mean)
 colnames(sum_table) <- c("Gender", "Mean productivity", "Mean salary")
-knitr::kable(sum_table, caption = "Mean productivity and mean salary by gender")
+knitr::kable(sum_table)
 ```
 
 ```{r, fig.cap="Salary vs. gender and leadership for level"}
@@ -563,7 +537,7 @@ curr_1 %>%
   guides(fill = guide_legend(title = "Gender"))
 ```
 
-*Table 6* shows the average *productivity* and *salary* by gender. From the table, we see that females possess the highest average productivity of 50.44, but the lowest average salary among the three genders. On the other hand, males have the second highest average productivity of 48.99 and the highest average salary. 
+*Table 7* shows the average *productivity* and *salary* by gender. From the table, we see that females possess the highest average productivity of 50.44, but the lowest average salary among the three genders. On the other hand, males have the second highest average productivity of 48.99 and the highest average salary. 
 
 *Figure 5* displays the histogram of *salary* by *gender* and *leadership role*. Looking at the distribution of *salary* by *leadership role*, we see that the distribution is a bit right-skewed, which is common as there are usually fewer employees with very high salaries than the ones with lower salaries. One thing worth notice is that the employees that *exceeds expectations* are all males, while the employees that *needs improvement* are all females. Despite this, employees that *exceeds expectations* seem to overall have slightly higher salaries than the employees that *needs improvement* do. 
 
@@ -589,13 +563,11 @@ salary_mod <- lmer(salary ~ productivity + leadership_for_level + gender + role_
                     + (1|employee_id), data = curr_1)
 ```
 
-**Table 7**: Likelihood ratio test results for model with/without gender
+**Table 8**: Likelihood ratio test results for model with/without gender
 
-|   | #Df | Loglik | Df | Chisq | Pr(>Chisq) |
-|---|-----|--------|----|-------|------------|
-| 1 | 14  | -58728 |    |       |            |
-| 2 | 16  | -58671 | 2  | 114   | <2.2e-16   |
+  ![](images/image3.png)
 
+Table 9. Model summary for salary
 
 ```{r}
 # table for reporting
@@ -609,10 +581,10 @@ salary_colnames <- c("Estimates", "95% CI")
 salary_mod_table <- cbind(ests_s, cis_s)
 rownames(salary_mod_table) <- salary_rownames
 colnames(salary_mod_table) <- salary_colnames
-knitr::kable(salary_mod_table, align = c("r", "r"), caption = "Model summary for salary")
+knitr::kable(salary_mod_table, align = c("r", "r"))
 ```
 
-Likelihood ratio test is used here to assess whether we should add the specific variable in our model. It will tell us the goodness of fit of two models based on the ratio of their likelihoods. After building models that include *employee id* as only random intercept and random intercept and slope (interacting with *gender*), the likelihood ratio test tells us to adopt the model with only the random intercept (p = 0.9246). Furthermore, to determine whether *gender* plays a significant role in the determination of salary, we compare our current model with a nested model that have the same covariates as in our current model but without *gender*. The result of the model comparison using the likelihood ratio test is presented in *Table 7*. We see that the p-value appears to be really small (< 2.2e-16), so we expect having *gender* to improve our model by a significant amount. 
+After building models that include *employee id* as only random intercept and random intercept and slope (interacting with *gender*), the likelihood ratio test tells us to adopt the model with only the random intercept (p = 0.9246). Furthermore, to determine whether *gender* plays a significant role in the determination of salary, we compare our current model with a nested model that have the same covariates as in our current model but without *gender*. The result of the model comparison using the likelihood ratio test is presented in *Table 9*. We see that the p-value appears to be really small (< 2.2e-16), so we expect having *gender* to improve our model by a significant amount. 
 
 By including *gender* in our model, the summary outputs for the final model is presented in *Table 8*, we see that the grand average of the salary is 31900.93. Predictors that are significant are: *leadership role: exceeds expectations*, *leadership role: needs improvement*, and all levels of the *seniority role*, since the 95% confidence intervals for these coefficients do not include 0. Among these important covariates, both levels of the *leadership role* have large negative effects, while all levels of the *seniority role* have large positive effects on salary.
 
@@ -622,14 +594,19 @@ By including *gender* in our model, the summary outputs for the final model is p
 
 From the visualizations and model above, the relationship between salary with covariates like productivity, leadership role, seniority role and gender shows that male employees tend to receive more benefits than females do. The visualization *Figure 5* and the proportion on average productivity exhibits unfairness between different genders. Between genders and leadership roles, some females think that salary still needs to be improved, while the male leaders think the opposite, that their benefits have already exceeded their expectations. Moreover, females who have the highest productivity but turn out have the lowest average salary, while the males have lower productivity resulting in a much higher average salary. The result from the linear mixed model we fitted, one with gender as a covariates and one without, the likelihood ratio test shows that gender does play a crucial role in salary. Holding other variables constant, female employees have 2022.17 dollars less than the average salary, while males have 679.10 dollars even more than the average.
 
-There is a slight discrepancy that our likelihood ratio test and 95% confidence interval give us different results. The likelihood ratio test says we should use the one with gender included (as gender may impose large effect on average salary), but 95% C.I. gives us the opposite as it is insignificant. Based on the evidence from previous proportion tables and visualizations, that all give us consistent result saying there is a gender bias problem, we tend to believe that there are still some differences when gender comes in, both in hiring processes and employees' benefits. 
+There is a slight discrepancy that our likelihood ratio test and 95% confidence interval give us different results. The likelihood ratio test says we should use the one with gender included, but 95% C.I. gives us the opposite as it is insignificant. Based on the evidence from previous proportion tables and visualizations, we tend to believe that there are still some differences when gender comes in, both in hiring processes and employees' benefits.
 
 
-# Discussion
+\newpage
+## Discussion
+Through model building and data analyzing, the three research questions are thoroughly answered in the process of data analyzing. Gender is not a very determinant factor in the first two hiring processes, however when it comes to the third phase, it has come to the attention that females are rejected when having the same score with males. When considering promoting an employee, the model suggested that gender is of significant. Same for the salary model, gender is a significant factor.
 
-_In this section you will summarize your findings across all the research questions and discuss the strengths and limitations of your work. It doesn't have to be long, but keep in mind that often people will just skim the intro and the discussion of a document like this, so make sure it is useful as a semi-standalone section (doesn't have to be completely standalone like the executive summary)._
 
 ### Strengths and limitations
+As the models for each process is being built and analyzed, there are several key findings to summarize and answer the research question. In the first phase of the hiring process, there seems to be no difference between male and female candidates. While in Phase-II, gender makes a difference in the model as the model with gender as a predictor makes more sense. Lastly, in Phase-III of hiring process, one key finding is that for two candidates with the same score but different genders, the male candidate is chosen instead of the female candidate. However, the two candidates have different scores for different skills, and since the hiring process is determined by an AI system instead of by person, it is unknown of how the AI system values the skills.
+For the promotion model, there are limitations to the data, as the first line of each employee represents its newest state of employment, hence it is impossible to know whether the employee gets promoted or not as we do not have the next period's data. Therefore, each employee's newest employment line needed to be removed.
+Lastly, for the salary model, the key findings is that female employees have 2022.17 dollars less than the average salary, while males have 679.10 dollars even more than the average, holding everything else constant. 
+Even the models are not perfect and involves a degree of the statistician's interpretation of the data set, the evidence is able to confirm the different of gender makes a difference in the employee or candidate's treatment.
 
 
 
@@ -647,6 +624,7 @@ _In this section you will summarize your findings across all the research questi
 
 
 ## Code of ethical conduct
+The following statements represent the ProDasta Consulting Company's code of ethical statements:
 
 1. ProDasta Consulting Company seeks to have high professional standards within the development, usage and enforcement and keeps a high standard for having the reputation of statistical practices. We state to do the best of setting standards for the Statistics field and for Statisticians, avoid any wrong actions. 
 
