@@ -208,7 +208,7 @@ $\beta_i$: coefficient for each variable
 
 Finally, in phase-III of the hiring, the candidates have two interviews with two interviewers. The HR team will then decide which candidates to hire based on the interview scores. Due to a limited number of observations in the final phase, and a relatively small number of variables, we decide to use summary tables and visualizations to draw on conclusions.
 
-### Results
+### Results in each hiring phase
 
 #### Phase-I
 
@@ -252,7 +252,7 @@ colnames(sum_filtered_table) <- c("Gender", "Number", "GPA", "Extracurricular", 
 kable(sum_filtered_table, caption = "Median statistics by gender")
 ```
 
-From *Table 2*, we see that among those candidates who successfully passed Phase-I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say". Hence, from the table summary, it seems that the Phase-I hiring is pretty fair across genders. 
+From *Table 2*, we see that among those candidates who successfully passed Phase-I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say". Hence, from the table summary, it seems that the Phase-I hiring is pretty fair across genders as the differences across the proportions are small.
 
 *Table 3* displays the median statistics for *GPA*, number of *Extracurricular*, and the number of *Work experience* the candidates have by gender. There is a relatively even split between the number of *male* and *female* candidates, while *prefer not to say* only has 4 candidates. Despite this, the median values for each of the variables seem to be pretty consistent across different genders. The only discrepancy appears to be *prefer not to say* having a lower *GPA* than the other two genders, potentially due to the small number of observations. 
 
@@ -612,7 +612,7 @@ colnames(salary_mod_table) <- salary_colnames
 knitr::kable(salary_mod_table, align = c("r", "r"), caption = "Model summary for salary")
 ```
 
-After building models that include *employee id* as only random intercept and random intercept and slope (interacting with *gender*), the likelihood ratio test tells us to adopt the model with only the random intercept (p = 0.9246). Furthermore, to determine whether *gender* plays a significant role in the determination of salary, we compare our current model with a nested model that have the same covariates as in our current model but without *gender*. The result of the model comparison using the likelihood ratio test is presented in *Table 7*. We see that the p-value appears to be really small (< 2.2e-16), so we expect having *gender* to improve our model by a significant amount. 
+Likelihood ratio test is used here to assess whether we should add the specific variable in our model. It will tell us the goodness of fit of two models based on the ratio of their likelihoods. After building models that include *employee id* as only random intercept and random intercept and slope (interacting with *gender*), the likelihood ratio test tells us to adopt the model with only the random intercept (p = 0.9246). Furthermore, to determine whether *gender* plays a significant role in the determination of salary, we compare our current model with a nested model that have the same covariates as in our current model but without *gender*. The result of the model comparison using the likelihood ratio test is presented in *Table 7*. We see that the p-value appears to be really small (< 2.2e-16), so we expect having *gender* to improve our model by a significant amount. 
 
 By including *gender* in our model, the summary outputs for the final model is presented in *Table 8*, we see that the grand average of the salary is 31900.93. Predictors that are significant are: *leadership role: exceeds expectations*, *leadership role: needs improvement*, and all levels of the *seniority role*, since the 95% confidence intervals for these coefficients do not include 0. Among these important covariates, both levels of the *leadership role* have large negative effects, while all levels of the *seniority role* have large positive effects on salary.
 
@@ -622,7 +622,7 @@ By including *gender* in our model, the summary outputs for the final model is p
 
 From the visualizations and model above, the relationship between salary with covariates like productivity, leadership role, seniority role and gender shows that male employees tend to receive more benefits than females do. The visualization *Figure 5* and the proportion on average productivity exhibits unfairness between different genders. Between genders and leadership roles, some females think that salary still needs to be improved, while the male leaders think the opposite, that their benefits have already exceeded their expectations. Moreover, females who have the highest productivity but turn out have the lowest average salary, while the males have lower productivity resulting in a much higher average salary. The result from the linear mixed model we fitted, one with gender as a covariates and one without, the likelihood ratio test shows that gender does play a crucial role in salary. Holding other variables constant, female employees have 2022.17 dollars less than the average salary, while males have 679.10 dollars even more than the average.
 
-There is a slight discrepancy that our likelihood ratio test and 95% confidence interval give us different results. The likelihood ratio test says we should use the one with gender included, but 95% C.I. gives us the opposite as it is insignificant. Based on the evidence from previous proportion tables and visualizations, we tend to believe that there are still some differences when gender comes in, both in hiring processes and employees' benefits.
+There is a slight discrepancy that our likelihood ratio test and 95% confidence interval give us different results. The likelihood ratio test says we should use the one with gender included (as gender may impose large effect on average salary), but 95% C.I. gives us the opposite as it is insignificant. Based on the evidence from previous proportion tables and visualizations, that all give us consistent result saying there is a gender bias problem, we tend to believe that there are still some differences when gender comes in, both in hiring processes and employees' benefits. 
 
 
 # Discussion
