@@ -204,7 +204,7 @@ Finally, in phase-III of the hiring, the candidates have two interviews with two
 ### Results
 
 #### Phase-I
-
+\
 ```{r}
 # filter out observations without cv or cover letter
 hire_phase1_filtered <- hire_phase1 %>%
@@ -213,7 +213,7 @@ hire_phase1_filtered <- hire_phase1 %>%
   filter(extracurriculars > 0)
 ```
 
-
+\
 Table 2: Proportion of candidates passing Phase-I by gender with filtered observations
 
 
@@ -255,6 +255,7 @@ From *Table 2*, we see that among those candidates who successfully passed Phase
 
 #### Phase-II
 
+
 Table 4. Hiring Phase-II summary output
 
 ```{r}
@@ -285,6 +286,7 @@ To investigate whether gender plays a significant role in the phase-II selection
 
 
 #### Phase-III
+
 
 ```{r, fig.cap="Histogram of the total scores vs. whether the candidate with the score passed phase-III"}
 # combine variables from phase-II with phase-III
