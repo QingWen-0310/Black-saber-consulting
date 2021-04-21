@@ -385,6 +385,7 @@ cleaned_data <- cleaned_data%>%
 ```
 
 In the original current employees data, we were given the information of all *current* employees' whole employment duration in the Black Saber Company. The data was collected from 2013 Q2 to 2020 Q4, containing not only basic information of employees such as *gender*, *team* and *employee id*, but also multiple quarterly observations recording their *productivity*, *leadership for level*, *role seniority* and  *salary*. 
+
 Before doing any data exploration, we made several changes to the given current employees data in order to better observe each employee's promotion situation. We created a new indicator variable named *get promotion* (ie. if one get promotion in the following next quarter, then the indicator variable returns *1* for current quarter; otherwise, it returns *0* instead). In this way, it was necessary for us to delete each employee's the most recent quarter observation because they could not provide any relevant promotion information. The above manipulation made sense because the decision of promoting is supposed to rely on one's current quarter's performance. Lastly, we excluded the employees who filled in "Prefer not to say" for gender since here we were interested to investigate the effect of gender on getting promotion.
 
 ```{r}
@@ -414,7 +415,7 @@ bp <- data2%>%
 bp +  scale_fill_manual(values = c("#fa8154", "#51c6b9")) 
 ```
 
-We filtered and focused on the observations only where employees got promotion and received "Appropriate for level" for *leadership for level* evaluation.Next, we grouped them by *gender* and *role seniority*. Visually, from *Figure 3*, we could see that female had a relatively higher average productivity than males did at almost every role level promotion stage. Here, we could interpret such average productivity as the potential threshold of promotion productivity requirement. That was saying under the same circumstance where males and females were rated as appropriate for leadership level, females were treated much stricter in terms of productivity in the promotion process.
+We filtered and focused on the observations only where employees got promotion and received "Appropriate for level" for *leadership for level* evaluation.Next, we grouped them by *gender* and *role seniority*. Visually, from *Figure 5*, we could see that female had a relatively higher average productivity than males did at almost every role level promotion stage. Here, we could interpret such average productivity as the potential threshold of promotion productivity requirement. That was saying under the same circumstance where males and females were rated as appropriate for leadership level, females were treated much stricter in terms of productivity in the promotion process.
 
 ```{r,warning=FALSE,fig.cap= "role seniority vs. average productivity" }
 ##explore team
@@ -430,7 +431,7 @@ sp <- data3 %>%
 sp +  scale_color_manual(values = c("#fa8154", "#51c6b9"))
 ```
 
-Next,through a even more detailed division, we further grouped observations by *gender*, *role seniority* and also *team*,and calculated the average productivity for each group. In *Figure 4*, it can be seen that in many departments such as Data, Marketing and Operations, at most of *role seniority*, females processed with a considerably higher productivity, further supporting our previous analysis. Additionally, we noticed that in design department and director level in many departments, there were only males getting promotions. The previous two figures made us concern about whether the promotion decision is made purely on employees' performance, or *gender* had became one of considerations during promotion decision. Hence, we continued investigating more through finding a proper model.
+Next,through a even more detailed division, we further grouped observations by *gender*, *role seniority* and also *team*,and calculated the average productivity for each group. In *Figure 6*, it can be seen that in many departments such as Data, Marketing and Operations, at most of *role seniority*, females processed with a considerably higher productivity, further supporting our previous analysis. Additionally, we noticed that in design department and director level in many departments, there were only males getting promotions. The previous two figures made us concern about whether the promotion decision is made purely on employees' performance, or *gender* had became one of considerations during promotion decision. Hence, we continued investigating more through finding a proper model.
 
 ### Methods
 
@@ -508,7 +509,7 @@ In addition, we also believed that predictor *leadership for level* should be in
 
 ### Conclusion & Discussion
 
-From earilier data exploration part, both *Figure 3* and *Figure 4* illustrated some extent of unfairness for female through showing the different standards of promotion productivity requirement for each gender. Later the results from the fitted logistic mixed effect model, illustrates that both predictors *gender* and *productivity* are significant in terms of having very small p-values.As a result, this further suggests that gender is one of the considerations in making promotion decisions. Lastly, we applied the likelihood ratio test to determine *leadership for level* should also be contained in our model.
+From earilier data exploration part, both *Figure 5* and *Figure 6* illustrated some extent of unfairness for female through showing the different standards of promotion productivity requirement for each gender. Later the results from the fitted logistic mixed effect model, illustrates that both predictors *gender* and *productivity* are significant in terms of having very small p-values.As a result, this further suggests that gender is one of the considerations in making promotion decisions. Lastly, we applied the likelihood ratio test to determine *leadership for level* should also be contained in our model.
 
 #### Strengths & Limitations
 
