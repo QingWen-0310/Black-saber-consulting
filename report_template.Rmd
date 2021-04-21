@@ -73,7 +73,7 @@ The results of the study are summarized below:
 
 Summary table 1: Conditional probability table for the three phases of hiring
 
-\begin{table}[]
+
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
 Gender            & \multicolumn{2}{c|}{Phase 1} & \multicolumn{2}{c|}{Phase 2} & \multicolumn{2}{c|}{Phase 3} \\ \hline
@@ -82,7 +82,7 @@ Man               & 0.467             & 0.483    & 0.468             & 0.682    
 Prefer not to say & 0.026             & 0.010    & 0.011             & 0.000    &  0.000                 &   0.000       \\ \hline
 Woman             & 0.508             & 0.507    & 0.522             & 0.318    & 0.417             & 0.200    \\ \hline
 \end{tabular}
-\end{table}
+
 
 
 
