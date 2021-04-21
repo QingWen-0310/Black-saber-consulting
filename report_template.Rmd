@@ -382,6 +382,7 @@ cleaned_data <- cleaned_data%>%
 ```
 
 In the original current employees data, we were given the information of all *current* employees' whole employment duration in the Black Saber Company. The data was collected from 2013 Q2 to 2020 Q4, containing not only basic information of employees such as *gender*, *team* and *employee id*, but also multiple quarterly observations recording their *productivity*, *leadership for level*, *role seniority* and  *salary*. 
+
 Before doing any data exploration, we made several changes to the given current employees data in order to better observe each employee's promotion situation. We created a new indicator variable named *get promotion* (ie. if one get promotion in the following next quarter, then the indicator variable returns *1* for current quarter; otherwise, it returns *0* instead). In this way, it was necessary for us to delete each employee's the most recent quarter observation because they could not provide any relevant promotion information. The above manipulation made sense because the decision of promoting is supposed to rely on one's current quarter's performance. Lastly, we excluded the employees who filled in "Prefer not to say" for gender since here we were interested to investigate the effect of gender on getting promotion.
 
 ```{r}
