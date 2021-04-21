@@ -213,7 +213,8 @@ hire_phase1_filtered <- hire_phase1 %>%
 ```
 
 
-Table 2: Proportion of candidates passing Phase-I by gender with filtered observations```
+Table 2: Proportion of candidates passing Phase-I by gender with filtered observations
+
 
 |                   | Does not pass | Pass |
 |-------------------|---------------|------|
@@ -223,6 +224,7 @@ Table 2: Proportion of candidates passing Phase-I by gender with filtered observ
 
 
 Table 3: Median statistics by gender
+
 ```{r}
 # filter data based on different gender
 h1f_male <- hire_phase1_filtered %>% 
@@ -253,6 +255,7 @@ From *Table 2*, we see that among those candidates who successfully passed Phase
 #### Phase-II
 
 Table 4. Hiring Phase-II summary output
+
 ```{r}
 # build model
 hire2_mod <- glm(pass~technical_skills + writing_skills + leadership_presence + speaking_skills, family = binomial(), data = hire_phase2)
@@ -279,6 +282,7 @@ From *Table 4*, we see that the effect of all four predictors are significantly 
 
 To investigate whether gender plays a significant role in the phase-II selection, we include *gender* as our predictor in addition to the original four. Then, by performing a Likelihood ratio test, we found that the p-value is around 0.41, suggesting that we lean more towards the simpler model that does not include *gender* as one of its predictors. 
 
+
 #### Phase-III
 
 ```{r, fig.cap="Histogram of the total scores vs. whether the candidate with the score passed phase-III"}
@@ -302,6 +306,7 @@ hire_2_3 %>%
 
 
 Table 5. Phase-II information for the two applicants with a tie in phase III
+
 ```{r}
 # table for the two candidates with a tie in interview total score
 hire2_temp <- hire_phase2 %>% 
@@ -456,6 +461,7 @@ promotion_model3<-lme4::glmer(get_promotion~gender+leadership_for_level+producti
 
 **Table 6**: Likelihood ratio test results for model with/without gender
 
+
 |   | #Df | Loglik | Df | Chisq | Pr(>Chisq) |
 |---|-----|--------|----|-------|------------|
 | 1 | 5   | -1405.2|    |       |            |
@@ -499,6 +505,7 @@ We reformatted the values of *salary* in the original data set by taking off the
 
 
 Table 7. Mean productivity and mean salary by gender
+
 ```{r}
 # salary distribution filled by gender
 curr_1 <- curr_employee %>% 
@@ -563,9 +570,13 @@ salary_mod <- lmer(salary ~ productivity + leadership_for_level + gender + role_
                     + (1|employee_id), data = curr_1)
 ```
 
-**Table 8**: Likelihood ratio test results for model with/without gender
+Table 8. Likelihood ratio test results for model with/without gender
 
-  ![](images/image3.png)
+|   | #Df | Loglik | Df | Chisq | Pr(>Chisq) |
+|---|-----|--------|----|-------|------------|
+| 1 | 14  | -58728 |    |       |            |
+| 2 | 16  | -58671 | 2  | 114   | <2.2e-16   |
+
 
 Table 9. Model summary for salary
 
@@ -653,3 +664,4 @@ ggsave("images/example.png", width = 7, height = 4)
 
 # norice how the image is included with the ![](file/path.png) below
 ```
+
