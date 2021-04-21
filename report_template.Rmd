@@ -104,12 +104,12 @@ the following report will be analyzing the data given by Black Saber Consulting 
 
 ### Data and exploratory analysis
 
-- *cover_letter*: categorical, whether the applicant submitted a cover letter
+- *cover letter*: categorical, whether the applicant submitted a cover letter
 - *cv*: categorical, whether the applicant submitted a CV
 - *gpa*: numerical, applicant's GPA at school on scale of 4.0
 - *gender*, categorical, applicant's gender, including man, woman and prefer not to say
 - *extracurricular*: number of extracurricular activities the applicant have
-- *work_experience*: number of work experiences the applicant have
+- *work experience*: number of work experiences the applicant have
 
 ```{r}
 # add indicator variables of whether the applicant passed phase-I
