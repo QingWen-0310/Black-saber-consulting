@@ -412,7 +412,7 @@ bp <- data2%>%
 bp +  scale_fill_manual(values = c("#fa8154", "#51c6b9")) 
 ```
 
-We filtered and focused on the observations only where employees got promotion and received "Appropriate for level" for *leadership for level* evaluation.Next, we grouped them by *gender* and *role seniority*. Visually, from *Figure 3*, we could see that female had a relatively higher average productivity than males did at almost every role level promotion stage. Here, we could interpret such average productivity as the potential threshold of promotion productivity requirement. That was saying under the same circumstance where males and females were rated as appropriate for leadership level, females were treated much stricter in terms of productivity in the promotion process.
+We filtered and focused on the observations only where employees got promotion and received "Appropriate for level" for *leadership for level* evaluation.Next, we grouped them by *gender* and *role seniority*. Visually, from *Figure 5*, we could see that female had a relatively higher average productivity than males did at almost every role level promotion stage. Here, we could interpret such average productivity as the potential threshold of promotion productivity requirement. That was saying under the same circumstance where males and females were rated as appropriate for leadership level, females were treated much stricter in terms of productivity in the promotion process.
 
 ```{r,warning=FALSE,fig.cap= "role seniority vs. average productivity" }
 ##explore team
@@ -428,7 +428,7 @@ sp <- data3 %>%
 sp +  scale_color_manual(values = c("#fa8154", "#51c6b9"))
 ```
 
-Next,through a even more detailed division, we further grouped observations by *gender*, *role seniority* and also *team*,and calculated the average productivity for each group. In *Figure 4*, it can be seen that in many departments such as Data, Marketing and Operations, at most of *role seniority*, females processed with a considerably higher productivity, further supporting our previous analysis. Additionally, we noticed that in design department and director level in many departments, there were only males getting promotions. The previous two figures made us concern about whether the promotion decision is made purely on employees' performance, or *gender* had became one of considerations during promotion decision. Hence, we continued investigating more through finding a proper model.
+Next,through a even more detailed division, we further grouped observations by *gender*, *role seniority* and also *team*,and calculated the average productivity for each group. In *Figure 6*, it can be seen that in many departments such as Data, Marketing and Operations, at most of *role seniority*, females processed with a considerably higher productivity, further supporting our previous analysis. Additionally, we noticed that in design department and director level in many departments, there were only males getting promotions. The previous two figures made us concern about whether the promotion decision is made purely on employees' performance, or *gender* had became one of considerations during promotion decision. Hence, we continued investigating more through finding a proper model.
 
 ### Methods
 
@@ -506,7 +506,7 @@ In addition, we also believed that predictor *leadership for level* should be in
 
 ### Conclusions
 
-From earilier data exploration part, both *Figure 3* and *Figure 4* illustrated some extent of unfairness for female through showing the different standards of promotion productivity requirement for each gender. Later the results from the fitted logistic mixed effect model, illustrates that both predictors *gender* and *productivity* are significant in terms of having very small p-values.As a result, this further suggests that gender is one of the considerations in making promotion decisions. Lastly, we applied the likelihood ratio test to determine *leadership for level* should also be contained in our model.
+From earilier data exploration part, both *Figure 5* and *Figure 6* illustrated some extent of unfairness for female through showing the different standards of promotion productivity requirement for each gender. Later the results from the fitted logistic mixed effect model, illustrates that both predictors *gender* and *productivity* are significant in terms of having very small p-values.As a result, this further suggests that gender is one of the considerations in making promotion decisions. Lastly, we applied the likelihood ratio test to determine *leadership for level* should also be contained in our model.
 
 \newpage
 ## Is the amount of salary determined based only on the talents and performance of the employees?
