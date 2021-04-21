@@ -104,12 +104,12 @@ the following report will be analyzing the data given by Black Saber Consulting 
 
 ### Data and exploratory analysis
 
-- *cover letter*: categorical, whether the applicant submitted a cover letter
-- *cv*: categorical, whether the applicant submitted a CV
-- *gpa*: numerical, applicant's GPA at school on scale of 4.0
-- *gender*: categorical, applicant's gender, including man, woman and prefer not to say
-- *extracurricular*: number of extracurricular activities the applicant have
-- *work experience*: number of work experiences the applicant have
+- *cover letter*, categorical, whether the applicant submitted a cover letter
+- *cv*, categorical, whether the applicant submitted a CV
+- *gpa*, numerical, applicant's GPA at school on scale of 4.0
+- *gender*, categorical, applicant's gender, including man, woman and prefer not to say
+- *extracurricular*, number of extracurricular activities the applicant have
+- *work experience*, number of work experiences the applicant have
 
 ```{r}
 # add indicator variables of whether the applicant passed phase-I
@@ -333,13 +333,13 @@ In both Phase I and Phase II, we fit generalized linear models on different vari
 
 ### Data & exploratory analysis
 
-- *employee id*: numerical, records as each employee's identity number
+- *employee id*, numerical, records as each employee's identity number
 - *gender*, categorical, employee's gender, including man, woman and prefer not to say
 - *team*, categorical, employee's team, including Client services, Data, Design Legal and financial, Marketing and sales, Operations, People and talent, and Software
 - *financial q*, categorical, the working period of the employee
 - *role seniority*, categorical, the employee's job position at the company
 - *leadership for level*,categorical, quality of demonstrated leadership, taking into account of the role level of the employee
-- *productivity*, numerical, work output of the employee, productivies of 50 are considered as satisfactory, and above 50 indicates better than expected
+- *productivity*, numerical, work output of the employee, productivities of 50 are considered as satisfactory, and above 50 indicates better than expected
 
 ```{r}
 cleaned_data <- curr_employee
@@ -411,7 +411,7 @@ bp <- data2%>%
 bp +  scale_fill_manual(values = c("#fa8154", "#51c6b9")) 
 ```
 
-We filtered and focused on the observations only where employees got promotion and received "Appropriate for level" for *leadership for level* evaluation.Next, we grouped them by *gender* and *role seniority*. Visually, from *Figure 3*, we could see that female had a relatively higher average productivity than males did at almost every role level promotion stage. Here, we could interprete such average productivity as the potential threshold of promotion productivity requirement. That was saying under the same circumstance where males and females were rated as appropriate for leadership level, females were treated much stricter in terms of productivity in the promotion process.
+We filtered and focused on the observations only where employees got promotion and received "Appropriate for level" for *leadership for level* evaluation.Next, we grouped them by *gender* and *role seniority*. Visually, from *Figure 3*, we could see that female had a relatively higher average productivity than males did at almost every role level promotion stage. Here, we could interpret such average productivity as the potential threshold of promotion productivity requirement. That was saying under the same circumstance where males and females were rated as appropriate for leadership level, females were treated much stricter in terms of productivity in the promotion process.
 
 ```{r,warning=FALSE,fig.cap= "role seniority vs. average productivity" }
 ##explore team
@@ -492,7 +492,7 @@ colnames(promotion_table) <- promotion_colnames
 knitr::kable(promotion_table, align = c("r", "r"), caption = "Model summary for promotion")
 ```
 
-*Table 5* gives us the proper summary for our final model after exponetiating all estimates, since expontiation allowed us to understand the results better. The significant predictors are *gender* and *productivity*, since their p-values are smaller than significance level of 0.05. Next step is very important, we were going to particularly interpret  *gender*. Its estimate of 0.69 tells us after controlling for all other predictors, female employee has **31%** lower odds of getting promoted in certain quarter than male employee does. Therefore, responding to the relevant second research question, we consider it is very likely that gender component was actually involved during the process of promotion, resulting in creating unfair promotion opportunity for females.
+*Table 5* gives us the proper summary for our final model after exponentiating all estimates, since exponentiation allowed us to understand the results better. The significant predictors are *gender* and *productivity*, since their p-values are smaller than significance level of 0.05. Next step is very important, we were going to particularly interpret  *gender*. Its estimate of 0.69 tells us after controlling for all other predictors, female employee has **31%** lower odds of getting promoted in certain quarter than male employee does. Therefore, responding to the relevant second research question, we consider it is very likely that gender component was actually involved during the process of promotion, resulting in creating unfair promotion opportunity for females.
 
 **Table 6**: Likelihood ratio test results for model with/without leadership for level
 
@@ -501,11 +501,11 @@ knitr::kable(promotion_table, align = c("r", "r"), caption = "Model summary for 
 | 1 | 4   | 2846.5 | 2817.1 |-1419.3 | 2838.5  |        | 2 |            |
 | 2 | 6   | 2817.1 | 2857.5 |-1402.5 | 2857.5  | 33.419 |   | 5.535e-08  |
 
-In addition, we also believed that predictor *leadership for level* should be included in our final model. Since after comparing our current full model with a smaller nested model excluding  *leadership for level*， the results from likelihood ratio test (shown in *Table 6*) provide significant evidence (p-value = 5.535e-08) that accounting for *leadership for level* would improve our model.
+In addition, we also believed that predictor *leadership for level* should be included in our final model. Since after comparing our current full model with a smaller nested model excluding  *leadership for level*, the results from likelihood ratio test (shown in *Table 6*) provide significant evidence (p-value = 5.535e-08) that accounting for *leadership for level* would improve our model.
 
 ### Conclusions
 
-From earilier data exploration part, both *Figure 3* and *Figure 4* illustrated some extent of unfairness for female through showing the different standards of promotion productivity requirement for each gender. Later the results from the fitted logistic mixed effect model， illustrates that both predictors *gender* and *productivity* are significant in terms of having very small p-values.As a result, this further suggests that gender is one of the considerations in making promotion decisions. Lastly, we applied the likelihood ratio test to determine *leadership for level* should also be contained in our model.
+From earilier data exploration part, both *Figure 3* and *Figure 4* illustrated some extent of unfairness for female through showing the different standards of promotion productivity requirement for each gender. Later the results from the fitted logistic mixed effect model, illustrates that both predictors *gender* and *productivity* are significant in terms of having very small p-values.As a result, this further suggests that gender is one of the considerations in making promotion decisions. Lastly, we applied the likelihood ratio test to determine *leadership for level* should also be contained in our model.
 
 \newpage
 ## Is the amount of salary determined based only on the talents and performance of the employees?
