@@ -30,6 +30,7 @@ library(lmtest)
 knitr::opts_chunk$set(echo=FALSE, message = FALSE, warning = FALSE, fig.align = "center", fig.height = 3.5)
 ```
 
+
 ```{r}
 # read in the data
 curr_employee <- read_csv("data/black-saber-current-employees.csv")
@@ -459,7 +460,7 @@ promotion_model3<-lme4::glmer(get_promotion~gender+leadership_for_level+producti
 #lmtest::lrtest(promotion_model2,promotion_model3)
 ```
 
-**Table 6**: Likelihood ratio test results for model with/without gender
+Table 6: Likelihood ratio test results for model with/without gender
 
 
 |   | #Df | Loglik | Df | Chisq | Pr(>Chisq) |
@@ -571,6 +572,7 @@ salary_mod <- lmer(salary ~ productivity + leadership_for_level + gender + role_
 ```
 
 Table 8. Likelihood ratio test results for model with/without gender
+
 
 |   | #Df | Loglik | Df | Chisq | Pr(>Chisq) |
 |---|-----|--------|----|-------|------------|
