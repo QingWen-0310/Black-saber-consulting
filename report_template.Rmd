@@ -57,7 +57,7 @@ The results of the study are summarized below:
 
 - Based on the evidence from built models and visualizations, we believe a model with the predictor *gender* gives better result and explanation, hence gender is considered as a variable when assigning salaries
 
-- Whether an employee gets a promotion depends on its productivity, leadership_for_level, and the gender. Gender makes a difference when considering the employee's leadership for level and 
+- Whether an employee gets a promotion depends on its *productivity*, *leadership for level*, and *gender*. Gender makes a difference when considering the employee's leadership for level and 
 
 
 ### Limitations
