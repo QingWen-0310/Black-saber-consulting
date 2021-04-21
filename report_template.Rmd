@@ -112,17 +112,17 @@ the following report will be analyzing the data given by Black Saber Consulting 
 - *work experience*, number of work experiences the applicant have
 
 ```{r}
-# add indicator variables of whether the applicant passed phase-I
+# add indicator variables of whether the applicant passed phase I
 success <- hire_phase2$applicant_id
 hire_phase1 <- hire_phase1 %>% 
   mutate(pass = ifelse(applicant_id %in% success, 1, 0))
 
-# add indicator variables of whether the applicant passed phase-II
+# add indicator variables of whether the applicant passed phase II
 success_2 <- hire_phase3$applicant_id
 hire_phase2 <- hire_phase2 %>% 
   mutate(pass = ifelse(applicant_id %in% success_2, 1, 0))
 
-# add indicator variable of whether the applicant passed phase-III
+# add indicator variable of whether the applicant passed phase III
 success_3 <- hire_final$applicant_id
 hire_phase3 <- hire_phase3 %>% 
   mutate(pass_final = ifelse(applicant_id %in% success_3, 1, 0))
@@ -194,17 +194,17 @@ To investigate the question, we drew out some exploratory plots. We found that i
 
 ### Method
 
-For phase-I data, we mainly utilize summary tables and visualizations to determine whether there is a potential gender bias during the selection process, as the previous exploratory analysis already gives some insights to the problem. For phase-II data, we know that the AI focuses on the four skills that the candidates possess, so we build a model to see which factors are important in this phase. Since we have a binary response of whether each candidate passed phase-II, we lean on adopting a logistic regression model. To check the assumptions for the logistic regression model, we start by looking at our observations, which are all independent of each other. With a logit link, we expect there to be a linear relationship among the explanatory variables and the transformed response. Hence, we include each candidate's scores on *technical skills*, *writing skills*, *leadership presence* and *speaking skills* as our predictors in the model. With the predictors and response specified, the model can be written out as follows: $$log(\frac{\mu_2}{1-\mu_2}) = \beta_0 + \beta_1 *\text{Technical skills} + \beta_2 *\text{Writing skills} + \beta_3 * \text{Leadership presence} + \beta_4 * \text{Speaking skills}$$ 
+For phase I data, we mainly utilize summary tables and visualizations to determine whether there is a potential gender bias during the selection process, as the previous exploratory analysis already gives some insights to the problem. For phase II data, we know that the AI focuses on the four skills that the candidates possess, so we build a model to see which factors are important in this phase. Since we have a binary response of whether each candidate passed phase II, we lean on adopting a logistic regression model. To check the assumptions for the logistic regression model, we start by looking at our observations, which are all independent of each other. With a logit link, we expect there to be a linear relationship among the explanatory variables and the transformed response. Hence, we include each candidate's scores on *technical skills*, *writing skills*, *leadership presence* and *speaking skills* as our predictors in the model. With the predictors and response specified, the model can be written out as follows: $$log(\frac{\mu_2}{1-\mu_2}) = \beta_0 + \beta_1 *\text{Technical skills} + \beta_2 *\text{Writing skills} + \beta_3 * \text{Leadership presence} + \beta_4 * \text{Speaking skills}$$ 
 
-$\mu$: the probability of a candidate passing phase-II
+$\mu$: the probability of a candidate passing phase II
 $\beta_i$: coefficient for each variable
 
-Finally, in phase-III of the hiring, the candidates have two interviews with two interviewers. The HR team will then decide which candidates to hire based on the interview scores. Due to a limited number of observations in the final phase, and a relatively small number of variables, we decide to use summary tables and visualizations to draw on conclusions.
+Finally, in phase III of the hiring, the candidates have two interviews with two interviewers. The HR team will then decide which candidates to hire based on the interview scores. Due to a limited number of observations in the final phase, and a relatively small number of variables, we decide to use summary tables and visualizations to draw on conclusions.
 
 ### Results
 
-#### Phase-I
-\
+#### Phase I
+
 ```{r}
 # filter out observations without cv or cover letter
 hire_phase1_filtered <- hire_phase1 %>%
@@ -212,9 +212,9 @@ hire_phase1_filtered <- hire_phase1 %>%
   filter(cover_letter == 1) %>% 
   filter(extracurriculars > 0)
 ```
+Phase I of the hiring process
 
-\
-Table 2: Proportion of candidates passing Phase-I by gender with filtered observations
+Table 2: Proportion of candidates passing Phase I by gender with filtered observations
 
 
 |                   | Does not pass | Pass |
@@ -223,7 +223,7 @@ Table 2: Proportion of candidates passing Phase-I by gender with filtered observ
 | Prefer not to say | 0.03          | 0.01 |
 | Woman             | 0.46          | 0.51 |
 
-From *Table 2*, we see that among those candidates who successfully passed Phase-I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say". Hence, from the table summary, it seems that the Phase-I hiring is pretty fair across genders. 
+From *Table 2*, we see that among those candidates who successfully passed Phase I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say". Hence, from the table summary, it seems that the Phase I hiring is pretty fair across genders. 
 
 Table 3: Median statistics by gender
 
@@ -252,10 +252,12 @@ kable(sum_filtered_table)
 *Table 3* displays the median statistics for *GPA*, number of *Extracurricular*, and the number of *Work experience* the candidates have by gender. There is a relatively even split between the number of *male* and *female* candidates, while *prefer not to say* only has 4 candidates. Despite this, the median values for each of the variables seem to be pretty consistent across different genders. The only discrepancy appears to be *prefer not to say* having a lower *GPA* than the other two genders, potentially due to the small number of observations. 
 
 
-#### Phase-II
+#### Phase II
+
+Phase II of the hiring process
 
 
-Table 4. Hiring Phase-II summary output
+Table 4. Hiring Phase II summary output
 
 ```{r}
 # build model
@@ -279,16 +281,16 @@ colnames(hire2_mod_table) <- hire2_colnames
 knitr::kable(hire2_mod_table, align = c("r", "r"))
 ```
 
-From *Table 4*, we see that the effect of all four predictors are significantly positive, with the odds ratio for *technical skills*, *writing skills*, *leadership presence*, and *speaking skills* being 1.08, 1.09, 2.53, and 2.01. The p-values for the 4 predictors are all significant. Taking the odds ratio of *technical skills* as an example, it means that with a 1 unit increase in *technical skills*, the odds of being a successful candidate in phase-II is 1.08 times higher, holding other variables constant. 
+From *Table 4*, we see that the effect of all four predictors are significantly positive, with the odds ratio for *technical skills*, *writing skills*, *leadership presence*, and *speaking skills* being 1.08, 1.09, 2.53, and 2.01. The p-values for the 4 predictors are all significant. Taking the odds ratio of *technical skills* as an example, it means that with a 1 unit increase in *technical skills*, the odds of being a successful candidate in phase II is 1.08 times higher, holding other variables constant. 
 
-To investigate whether gender plays a significant role in the phase-II selection, we include *gender* as our predictor in addition to the original four. Then, by performing a Likelihood ratio test, we found that the p-value is around 0.41, suggesting that we lean more towards the simpler model that does not include *gender* as one of its predictors. 
-
-
-#### Phase-III
+To investigate whether gender plays a significant role in the phase II selection, we include *gender* as our predictor in addition to the original four. Then, by performing a Likelihood ratio test, we found that the p-value is around 0.41, suggesting that we lean more towards the simpler model that does not include *gender* as one of its predictors. 
 
 
-```{r, fig.cap="Histogram of the total scores vs. whether the candidate with the score passed phase-III"}
-# combine variables from phase-II with phase-III
+#### Phase III
+
+
+```{r, fig.cap="Histogram of the total scores vs. whether the candidate with the score passed phase III"}
+# combine variables from phase II with phase III
 hire_2_3 <- hire_phase3 %>% 
   mutate(total = interviewer_rating_1 + interviewer_rating_2)%>% 
   mutate(`Pass` = as.factor(ifelse(pass_final == 1, "Yes", "No"))) %>% 
@@ -307,7 +309,7 @@ hire_2_3 %>%
 ```
 
 
-Table 5. Phase-II information for the two applicants with a tie in phase III
+Table 5. Phase II information for the two applicants with a tie in phase III
 
 ```{r}
 # table for the two candidates with a tie in interview total score
@@ -319,17 +321,17 @@ colnames(hire2_temp) <- c("Applicant id", "Gender", "Technical skills", "Writing
 knitr::kable(hire2_temp)
 ```
 
-*Figure 4* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations and summarize the scores obtained by these two candidates in *Table 5*. From the table, the female candidate have higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does. On the other hand, the male candidate has higher scores in *technical skills* than the female candidate does.
+*Figure 4* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase II data and filter out these two observations and summarize the scores obtained by these two candidates in *Table 5*. From the table, the female candidate have higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does. On the other hand, the male candidate has higher scores in *technical skills* than the female candidate does.
 
 ### Conclusion & Discussion
 
-As *Table 5* shows, the male has higher scores in *technical skills*, while the female is better at categories like *writing skills*, *leadership presence*, and *speaking skills*. According to our phase-II model, *leadership presence* and *speaking skills* seems to have larger effect on the odds ratio than the other two determinants do. So, we would expect the female to be selected as a successful candidate instead of the male. 
+As *Table 5* shows, the male has higher scores in *technical skills*, while the female is better at categories like *writing skills*, *leadership presence*, and *speaking skills*. According to our phase II model, *leadership presence* and *speaking skills* seems to have larger effect on the odds ratio than the other two determinants do. So, we would expect the female to be selected as a successful candidate instead of the male. 
 
 In both Phase I and Phase II, we fit generalized linear models on different variables in each phase, and use likelihood ratio tests to find out whether gender plays an important role in passing rate. In phase I, we assess the impact of GPA, extracurricular activities and work experiences on passing status; for phase II, technical skills, writing skills, leadership presence and speaking skills are considered. Analyzing their odds ratios, these variables all have remarkable effects on whether candidates go to the next round smoothly. On the other hand, variable gender does not play a role here. The fitted models and the likelihood ratio tests tell us that gender does not have a noticeable impact on the final result, we tend to choose a simpler model that excludes the impact of gender here. Therefore, we do not think gender is a significant determinant of being a successful applicant in each hiring phase.
 
 #### Strengths & Limitations
 
-As the models for each process is being built and analyzed, there are several key findings to summarize and answer the research question. In the first phase of the hiring process, there seems to be no difference between male and female candidates. While in Phase-II, gender makes a difference in the model as the model with gender as a predictor makes more sense. Lastly, in Phase-III of hiring process, one key finding is that for two candidates with the same score but different genders, the male candidate is chosen instead of the female candidate. However, the two candidates have different scores for different skills, and since the hiring process is determined by an AI system instead of by person, it is unknown of how the AI system values the skills.
+As the models for each process is being built and analyzed, there are several key findings to summarize and answer the research question. In the first phase of the hiring process, there seems to be no difference between male and female candidates. While in Phase II, gender makes a difference in the model as the model with gender as a predictor makes more sense. Lastly, in Phase III of hiring process, one key finding is that for two candidates with the same score but different genders, the male candidate is chosen instead of the female candidate. However, the two candidates have different scores for different skills, and since the hiring process is determined by an AI system instead of by person, it is unknown of how the AI system values the skills.
 
 \newpage
 ## Is gender one of the considerations when making the decision whether an employee should be promoted?
