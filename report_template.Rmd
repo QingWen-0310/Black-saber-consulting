@@ -326,6 +326,7 @@ As *Table 5* shows, the male has higher scores in *technical skills*, while the 
 
 In both Phase I and Phase II, we fit generalized linear models on different variables in each phase, and use likelihood ratio tests to find out whether gender plays an important role in passing rate. In phase I, we assess the impact of GPA, extracurricular activities and work experiences on passing status; for phase II, technical skills, writing skills, leadership presence and speaking skills are considered. Analyzing their odds ratios, these variables all have remarkable effects on whether candidates go to the next round smoothly. On the other hand, variable gender does not play a role here. The fitted models and the likelihood ratio tests tell us that gender does not have a noticeable impact on the final result, we tend to choose a simpler model that excludes the impact of gender here. Therefore, we do not think gender is a significant determinant of being a successful applicant in each hiring phase.
 
+\newpage
 ## Is gender one of the considerations when making the decision whether an employee should be promoted?
 
 - *employee id*: numerical, records as each employee's identity number
@@ -612,10 +613,12 @@ There is a slight discrepancy that our likelihood ratio test and 95% confidence 
 
 \newpage
 ## Discussion
+
 Through model building and data analyzing, the three research questions are thoroughly answered in the process of data analyzing. Gender is not a very determinant factor in the first two hiring processes, however when it comes to the third phase, it has come to the attention that females are rejected when having the same score with males. When considering promoting an employee, the model suggested that gender is of significant. Same for the salary model, gender is a significant factor.
 
 
 ### Strengths and limitations
+
 As the models for each process is being built and analyzed, there are several key findings to summarize and answer the research question. In the first phase of the hiring process, there seems to be no difference between male and female candidates. While in Phase-II, gender makes a difference in the model as the model with gender as a predictor makes more sense. Lastly, in Phase-III of hiring process, one key finding is that for two candidates with the same score but different genders, the male candidate is chosen instead of the female candidate. However, the two candidates have different scores for different skills, and since the hiring process is determined by an AI system instead of by person, it is unknown of how the AI system values the skills.
 For the promotion model, there are limitations to the data, as the first line of each employee represents its newest state of employment, hence it is impossible to know whether the employee gets promoted or not as we do not have the next period's data. Therefore, each employee's newest employment line needed to be removed.
 Lastly, for the salary model, the key findings is that female employees have 2022.17 dollars less than the average salary, while males have 679.10 dollars even more than the average, holding everything else constant. 
