@@ -413,7 +413,7 @@ bp +  scale_fill_manual(values = c("#fa8154", "#51c6b9"))
 
 We filtered and focused on the observations only where employees got promotion and received "Appropriate for level" for *leadership for level* evaluation.Next, we grouped them by *gender* and *role seniority*. Visually, from *Figure 3*, we could see that female had a relatively higher average productivity than males did at almost every role level promotion stage. Here, we could interprete such average productivity as the potential threshold of promotion productivity requirement. That was saying under the same circumstance where males and females were rated as appropriate for leadership level, females were treated much stricter in terms of productivity in the promotion process.
 
-```{r,warning=FALSE,fig.cap= role seniority vs. average productivity }
+```{r,warning=FALSE,fig.cap= "role seniority vs. average productivity" }
 ##explore team
 data3 <- tidy_data %>%
   filter(get_promotion == 1,leadership_for_level=="Appropriate for level")%>%
