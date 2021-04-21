@@ -49,11 +49,11 @@ When a company hires or wants to benefit its employees, there are more than one 
 ### Key findings
 The results of the study are summarized below:
 
-- those candidates who successfully passed Phase-I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say", which is a considerably fair percentage
+- those candidates who successfully passed phase I, 48% of them are male and 51% of them are female, with the rest 1% having a gender of "prefer not to say", which is a considerably fair percentage
 
-- In Phase-II of the hiring process, models suggested *gender* is not used as a predictor of hiring
+- In phase II of the hiring process, models suggested *gender* is not used as a predictor of hiring
 
-- In Phase-III, there are two candidates with the same score and of different genders. Even the female candidate has higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does, the male candidate is chosen by the HR instead of the female candidate.
+- In phase III, there are two candidates with the same score and of different genders. Even the female candidate has higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does, the male candidate is chosen by the HR instead of the female candidate.
 
 - Based on the evidence from built models and visualizations, we believe a model with the predictor *gender* gives better result and explanation, hence gender is considered as a variable when assigning salaries
 
@@ -413,7 +413,8 @@ data2 <- tidy_data %>%
   filter(leadership_for_level=="Appropriate for level")
 bp <- data2%>%
   ggplot( mapping = aes(x = role_seniority, y = productivity,fill=gender)) + 
-  geom_boxplot()
+  geom_boxplot()+
+  theme_minimal()
 bp +  scale_fill_manual(values = c("#fa8154", "#51c6b9")) 
 ```
 
@@ -450,23 +451,23 @@ $U_i$: random effect for specific employee\
 To verify the appropriateness of using such model,there are several assumptions to be checked. Firstly, observations within of employee are not independent but each subject(employee) is indeed independent. Next, we applied qq-plots to verify that our random effects are from the normal distribution.Lastly, our response variable (*get promotion*) is binary, so a logistic link function is appropriate.
 
 ```{r}
-qqnorm(curr_employee$employee_id)
-qqline(curr_employee$employee_id, col = "orange", lwd=2)
+#qqnorm(curr_employee$employee_id)
+#qqline(curr_employee$employee_id, col = "orange", lwd=2)
 ```
 
 ```{r}
-cleaned_data <- curr_employee
-cleaned_data <- cleaned_data%>%
-  mutate(team, team_num =case_when(
-    team == "Client services"~1,
-    team == "Data"~2,
-    team == "Design Legal and financial"~3,
-    team == "Marketing and sales"~4,
-    team == "Operations"~5,
-    team == "People and talent"~6,
-    team == "Software"~7  ))
-qqnorm(cleaned_data$team_num)
-qqline(cleaned_data$team_num, col = "orange", lwd=2)
+#cleaned_data <- curr_employee
+#cleaned_data <- cleaned_data%>%
+#  mutate(team, team_num =case_when(
+#    team == "Client services"~1,
+#    team == "Data"~2,
+#    team == "Design Legal and financial"~3,
+#    team == "Marketing and sales"~4,
+#    team == "Operations"~5,
+#    team == "People and talent"~6,
+#    team == "Software"~7  ))
+#qqnorm(cleaned_data$team_num)
+#qqline(cleaned_data$team_num, col = "orange", lwd=2)
 ```
 
 ```{r}
