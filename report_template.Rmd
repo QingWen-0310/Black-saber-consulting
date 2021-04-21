@@ -115,12 +115,12 @@ the following report will be analyzing the data given by Black Saber Consulting 
 
 ### Data and exploratory analysis
 
-- *cover_letter*: categorical, whether the applicant submitted a cover letter
+- *cover letter*: categorical, whether the applicant submitted a cover letter
 - *cv*: categorical, whether the applicant submitted a CV
 - *gpa*: numerical, applicant's GPA at school on scale of 4.0
 - *gender*, categorical, applicant's gender, including man, woman and prefer not to say
 - *extracurricular*: number of extracurricular activities the applicant have
-- *work_experience*: number of work experiences the applicant have
+- *work experience*: number of work experiences the applicant have
 
 ```{r}
 # add indicator variables of whether the applicant passed phase-I
@@ -319,7 +319,7 @@ knitr::kable(hire2_temp, caption = "Phase-II information for the two applicants 
 
 *Figure 4* shows the distribution of the total scores earned by candidates which is constructed from summing up the two *interview ratings*. From the plot, we see that most candidates with the highest scores are recruited. However, there are two candidates with a total score of 153, where only one of them is recruited who is a male. Hence, to explore further, we went back to the phase-II data and filter out these two observations and summarize the scores obtained by these two candidates in *Table 4*. From the table, the female candidate have higher scores in *writing skills*, *leadership presence*, and *speaking skills* than the male candidate does. On the other hand, the male candidate has higher scores in *technical skills* than the female candidate does.
 
-### Conclusions
+### Conclusions on potential gender bias in hiring phases.
 
 As *Table 4* shows, the male has higher scores in *technical skills*, while the female is better at categories like *writing skills*, *leadership presence*, and *speaking skills*. According to our phase-II model, *leadership presence* and *speaking skills* seems to have larger effect on the odds ratio than the other two determinants do. So, we would expect the female to be selected as a successful candidate instead of the male. 
 
